@@ -39,7 +39,7 @@ import {
 } from "@/hook/useAssets";
 import { useCreateView, useDeleteView, useUpdateView } from "@/hook/useViews";
 
-const Table6 = ({
+const Table7 = ({
   data,
   columns,
   views,
@@ -90,13 +90,25 @@ const Table6 = ({
   }, [data]);
 
   const handleCreateRow = (newRow) => {
+    // ตรวจสอบว่ามีค่าหรือไม่ในแต่ละฟิลด์
+    const missingValues = Object.entries(newRow.values).filter(
+      ([key, value]) => !value
+    );
+
+    if (missingValues.length > 0) {
+      // ถ้ามีฟิลด์ที่ว่าง ให้แสดงข้อความเตือน
+      alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+      return; // ไม่สร้าง row หากมีฟิลด์ที่ว่าง
+    }
+
+    // หากไม่มีฟิลด์ที่ว่าง ให้ดำเนินการสร้าง row
     createAsset(newRow.values);
     table.setCreatingRow(null); // ซ่อน UI การสร้าง row
   };
 
   const handleSaveRow = (updatedRow) => {
     updateAsset({
-      id: updatedRow.values.id, // ส่ง id ของแถวที่ต้องการอัปเดต
+      id: updatedRow.row.original.id, // ส่ง id ของแถวที่ต้องการอัปเดต
       updatedAsset: updatedRow.values, // ส่งข้อมูลใหม่ของแถว
     });
     table.setEditingRow(null); // ซ่อน UI การสร้าง row
@@ -111,7 +123,7 @@ const Table6 = ({
     deleteAsset(selectedAsset.id);
     setIsDeleteModalOpen(false);
   };
-  //!-----------------------------------------------------------------
+  //!-----------------------------------------------------------------TABLE--------------------------------------------------------
 
   // สร้าง table instance
   const table = useMaterialReactTable({
@@ -119,6 +131,8 @@ const Table6 = ({
     data: filteredData, // Using filteredData in the table
     enableEditing: true, // Enable editing
     enableColumnOrdering: true,
+    enableBottomToolbar: true,
+    positionBottomToolbar: "sticky",
     //---------------------------------------------Action-----------------------------------------
     renderRowActions: ({ row, table }) => (
       <Box style={{ display: "flex" }}>
@@ -136,8 +150,8 @@ const Table6 = ({
         </Tooltip>
       </Box>
     ),
-    onEditingRowSave: (updatedRow) => handleSaveRow(updatedRow),
-    onCreatingRowSave: (newRow) => handleCreateRow(newRow),
+    onEditingRowSave: (updatedRow) => handleSaveRow(updatedRow), //ปุ่ม save
+    onCreatingRowSave: (newRow) => handleCreateRow(newRow), //ปุ่ม save
     ///Group---------------------------------------------------------------
     displayColumnDefOptions: {
       "mrt-row-expand": {
@@ -201,12 +215,13 @@ const Table6 = ({
     ///ตารางยืดดด-------------------------------------------------------------------------------------
     muiTableBodyProps: {
       sx: {
-        overflow: "unset", // ยกเลิกการเลื่อนอัตโนมัติในแนวตั้ง
+        overflow: "auto", // ยกเลิกการเลื่อนอัตโนมัติในแนวตั้ง
       },
     },
     muiTableContainerProps: {
       sx: {
-        maxHeight: "unset", // ตั้งค่า maxHeight เป็น 'unset' เพื่อให้ตารางไม่จำกัดความสูง
+        maxHeight: "calc(100vh - 350px)", // Adjust height to leave space for bottom sections
+        overflow: "auto", // ตั้งค่า maxHeight เป็น 'unset' เพื่อให้ตารางไม่จำกัดความสูง
       },
     },
     /// save view----------------------------------------------------------------------------
@@ -400,7 +415,7 @@ const Table6 = ({
     ),
   });
 
-  ///ฟังชั่นเพิ่ม merge filter-------------------------------------------------------------------
+  //?ฟังชั่นเพิ่ม merge filter-------------------------------------------------------------------
   // เปิด-ปิด Dialog
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
@@ -515,8 +530,16 @@ const Table6 = ({
         {/* Filter ด้านขวา ---------------------------------------------------------------*/}
         {showSidebarRight && (
           <Paper>
-            <Stack p="8px" gap="8px" sx={{ width: "300px" }}>
-              {/* ปุ่มและ Dialog สำหรับจัดการกลุ่ม----------------------------------- */}
+            <Stack
+              p="8px"
+              gap="8px"
+              sx={{
+                width: "350px",
+                maxHeight: "calc(80vh - 100px)",
+                overflowY: "auto", // เพิ่ม scrollable behavior
+              }}
+            >
+              {/* ปุ่มและ Dialog สำหรับจัดการกลุ่ม */}
               <Stack direction="column" spacing={2} alignItems="center">
                 {/* กล่องบน: ปุ่ม 2 ปุ่ม */}
                 <Box>
@@ -527,7 +550,6 @@ const Table6 = ({
                     >
                       Merge Filtered
                     </Button>
-
                     <Button
                       variant="contained"
                       onClick={handleFilterBySavedIds}
@@ -550,7 +572,8 @@ const Table6 = ({
                   ))}
                 </Box>
               </Stack>
-              {/* Dialog ให้กรอกชื่อกลุ่ม --------------------------------------------*/}
+
+              {/* Dialog ให้กรอกชื่อกลุ่ม */}
               <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
                 <DialogTitle>Save Filtered IDs</DialogTitle>
                 <DialogContent>
@@ -577,22 +600,24 @@ const Table6 = ({
                   </Button>
                 </DialogActions>
               </Dialog>
-              {/*  */}
-              {/* filter sidebar --------------------------------------------------------------- */}
-              {table
-                .getLeafHeaders()
-                .map(
-                  (header) =>
-                    header.id !== "mrt-row-select" &&
-                    header.id !== "mrt-row-numbers" &&
-                    header.id !== "mrt-row-actions" && (
-                      <MRT_TableHeadCellFilterContainer
-                        key={header.id}
-                        header={header}
-                        table={table}
-                      />
-                    )
-                )}
+
+              {/* filter sidebar */}
+              {table.getLeafHeaders().map(
+                (header) =>
+                  header.id !== "mrt-row-select" &&
+                  header.id !== "mrt-row-numbers" &&
+                  header.id !== "mrt-row-actions" && (
+                    <MRT_TableHeadCellFilterContainer
+                      key={header.id}
+                      header={header}
+                      table={table}
+                      sx={{
+                        lineHeight: 3, // ควบคุมความสูงของแถว
+                        padding: "20px", // ควบคุม padding
+                      }}
+                    />
+                  )
+              )}
             </Stack>
           </Paper>
         )}
@@ -644,4 +669,4 @@ const Table6 = ({
   );
 };
 
-export default Table6;
+export default Table7;

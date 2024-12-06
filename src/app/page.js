@@ -22,6 +22,7 @@ const Login = () => {
   // ฟังก์ชันจัดการเมื่อ click submit form
   const handleLogin = async (e) => {
     e.preventDefault();
+
     // console.log("Username:", username);
     // console.log("Password:", password);
 
@@ -33,6 +34,7 @@ const Login = () => {
         title: "Required all field",
         text: "Please fill in both Username and Password .",
         confirmButtonText: "OK", // Confirmation button
+        
       });
       return; // หยุดการทำงานถ้าข้อมูลไม่ครบ
     } else {
@@ -43,8 +45,9 @@ const Login = () => {
         password: password,
       };
 
-      // ส่ง Request API Login ด้วย Axios  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      setIsLoading(true);  // เปิด Loading
       try {
+        // ส่ง Request API Login ด้วย Axios  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         const response = await axios.post(
           "http://127.0.0.1:8000/users/login",
           data,
@@ -57,12 +60,15 @@ const Login = () => {
 
         if (response.data) {
           console.log("Logined successfully:", response.data); //แสดงเมื่อ request api สำเร็จ
+          localStorage.setItem("user_id", response.data.user.id); //เก็บ access_token ใน localstorage
           localStorage.setItem("access_token", response.data.access_token); //เก็บ access_token ใน localstorage
           localStorage.setItem("username", response.data.user.username); //เก็บ username ใน localstorage
           localStorage.setItem("name", response.data.user.name); //เก็บ name ใน localstorage
           localStorage.setItem("department", response.data.user.department); //เก็บ department ใน localstorage
           localStorage.setItem("position", response.data.user.position); //เก็บ position ใน localstorage
           router.push("/assets"); // เปลี่ยนไปหน้า assets
+          setIsLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+          
         } else {
           console.log("Login failed: Try again");
         }
@@ -74,6 +80,9 @@ const Login = () => {
           title: "Login failed <br> please try again",
           confirmButtonText: "OK", // Confirmation button
         });
+      } finally{
+        setIsLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+        return; // หยุดการทำงานเพิ่มเติมในฟังก์ชันนี้
       }
     } // else
   };
@@ -204,7 +213,8 @@ const Login = () => {
                 priority // ใช้ priority เพื่อ preload ภาพ
               />
             </div>
-            <h3>Welcome to Login</h3>
+            <h5>Welcome to</h5>
+            <h4>Digital Assets Management</h4>
             <p>Don’t have an account?</p>
             <Link
               href="/register"

@@ -1,0 +1,34 @@
+    /* ปรับขนาดและสไตล์กล่องแจ้งเตือน */
+    .modern-swal-popup {
+        font-family: 'Poppins', sans-serif; /* ใช้ฟอนต์สมัยใหม่ */
+        border-radius: 10px; /* มุมโค้งมน */
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* เพิ่มเงา */
+    }
+
+
+    /* ปรับขนาดและสไตล์หัวข้อ */
+    .modern-swal-title {
+        font-size: 18px; /* ขนาดฟอนต์เล็กลง */
+        font-weight: 600;
+        color: #333; /* สีเทาเข้ม */
+        margin-bottom: 10px;
+        line-height: 1.5;
+    }
+  
+    /* ปรับแต่งปุ่มยืนยัน */
+    .modern-swal-button {
+        font-size: 14px; /* ขนาดฟอนต์เล็กลง */
+        font-weight: 500;
+        padding: 10px 20px;
+        border-radius: 5px;
+        background-color: #9f9f9f; /* สีเขียว */
+        color: #fff; /* สีตัวอักษร */
+        transition: all 0.3s ease;
+    }
+  
+    .modern-swal-button:hover {
+        background-color: #9f9f9fa3; /* สีเขียวเข้มขึ้นเมื่อ hover */
+    }
+
+  

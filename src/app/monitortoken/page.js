@@ -9,11 +9,14 @@ function Monitortoken() {
   const searchParams = useSearchParams(); // ใช้สำหรับอ่าน query string
   const router = useRouter(); // ใช้สำหรับการนำทาง
   const token = searchParams.get("token"); // รับค่า 'token' จาก URL
+  const username = searchParams.get("username"); // รับค่า 'token' จาก URL
 
   // ฟังก์ชัน validateToken
   const validateToken = (token) => {
     try {
       const decoded = jwtDecode(token); // ถอดรหัส (decode) token
+      const userId = decoded.sub; // ดึง user ID
+
       if (!decoded.exp) {
         console.log("Token missing expiration (exp) field");
         return false;
@@ -30,10 +33,14 @@ function Monitortoken() {
 
   // ฟังก์ชันสำหรับการทำงานหลักใน useEffect
   const handleTokenProcessing = () => {
-    console.log("token : " + token); // Debug get token
+    // console.log("token : " + token); // Debug get token
+    const decoded = jwtDecode(token); // ถอดรหัส (decode) token
+    const user_id = decoded.sub; // ดึง user ID
 
     if (token) {
       localStorage.setItem("access_token", token); // เก็บ token ใน localStorage
+      localStorage.setItem("user_id", user_id); // เก็บ token ใน localStorage
+      localStorage.setItem("username", username); // เก็บ token ใน localStorage
       router.replace("/monitortoken"); // ลบ token จาก URL
 
       // ถ้า token ถูกต้องจะเปลี่ยนหน้าไปที่ /assets

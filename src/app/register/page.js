@@ -2,7 +2,7 @@
 
 // pages/register.js
 import React from 'react';
-import { useState,useEffect} from "react";
+import { useState} from "react";
 import Link from 'next/link';
 import styles from './register.module.css';  // css module แยกตาม component
 import Image from 'next/image';  // รูปแบบ Next ทำให้โหลดเร็ว
@@ -19,7 +19,7 @@ const Register = () => {
     const [name, setName] = useState('');
     const [department, setDepartment] = useState('');
     const [position, setPosition] = useState('');
-    const [permission, setPermission] = useState('1');
+    const [level, setLevel] = useState('1');
 
     //ใช้ redirect page
     const router = useRouter(); 
@@ -35,7 +35,7 @@ const Register = () => {
       name: name,
       department: department,
       position: position,
-      permission: Number(permission)
+      level: Number(level)
     };
 
 

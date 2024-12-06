@@ -12,8 +12,9 @@ const ProtectedRoute = ({ children }) => {
   useEffect(() => {
 
     const token = localStorage.getItem("access_token"); // ดึง Token จาก localStorage
+    const username = localStorage.getItem("username"); // ดึง Token จาก localStorage
 
-    if (!token) {
+    if ((!token) || (!username)) {
       router.push("/"); // ถ้าไม่มี Token ให้ Redirect ไปหน้า Login
     } 
     else {

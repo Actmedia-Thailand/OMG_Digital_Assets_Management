@@ -7,7 +7,7 @@ import Link from 'next/link';
 import './style/header.css';
 import { useRouter } from 'next/navigation'; // ใช้ next/navigation สำหรับ App Router
 
-function Topbar() {
+function Topbar({fixedTop}) {
 
     // test
     const [showAccount, setShowAccount] = useState(false);
@@ -32,6 +32,7 @@ function Topbar() {
     const router = useRouter();   // คำสั่งสำหรับ redirect page   ++++++++++++++++++++++++++++++++
     const handleLogout = () => {
         // ลบข้อมูลทั้งหมดใน LocalStorage หลัง Click Logout
+        localStorage.removeItem("user_id");
         localStorage.removeItem("access_token");
         localStorage.removeItem("username");
         localStorage.removeItem("name");
@@ -66,7 +67,7 @@ function Topbar() {
   return (
     <div>
             {/*++++++++++++++++ Navbar top +++++++++++++++++++++++++++++++++ */}
-            <Navbar expand="lg" style={{ backgroundColor: "#118DCE", color: "white" }}>
+            <Navbar className={fixedTop} expand="lg" style={{ backgroundColor: "#118DCE", color: "white" }}>
                 <Container fluid className="d-flex justify-content-between align-items-center customJustifyTopHead">
                     <Navbar.Brand href="/assets" style={{ color: "#fff", fontWeight: "500" }}>
                         <i className="bi bi-display pe-3"></i> OMG Digital - Asset Management
