@@ -212,7 +212,7 @@ const Profile = () => {
     <>
     <ProtectedRoute>
     <Topbar fixedTop="fixed-top"/>
-    <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light py-5">
+    <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light py-5 mt-5">
       <div className="card p-4" style={{ width: '400px' }}>
         <div className="text-center mb-4">
         <div className={`rounded-circle mx-auto d-flex align-items-center ${styles.boxLogoRegister}`} style={{ width: '130px', height: '130px'}}>
