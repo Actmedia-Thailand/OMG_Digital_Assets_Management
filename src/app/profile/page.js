@@ -7,7 +7,7 @@ import Link from 'next/link';
 import styles from './profile.module.css';  // css module แยกตาม component
 import './profile.css';
 import Image from 'next/image';  // รูปแบบ Next ทำให้โหลดเร็ว
-import { useRouter } from 'next/navigation'; // ใช้ next/navigation สำหรับ App Router
+// import { useRouter } from 'next/navigation'; // ใช้ next/navigation สำหรับ App Router
 import axios from "axios";  // ใช้เรียก api
 import Swal from 'sweetalert2'; // Import SweetAlert2
 
@@ -18,7 +18,6 @@ import ProtectedRoute from '@/components/protectedRoute';
 import Loader2 from '@/components/loader2';
 
 const Profile = () => {
-
     // ใช้ useState เก็บข้อมูลจากฟอร์ม +++++++++++++++++++++++++++++++++++++
     const [username, setUsername] = useState('');
     // const [password, setPassword] = useState('');
@@ -36,7 +35,10 @@ const Profile = () => {
     // const router = useRouter(); //ใช้ redirect page
     const [isEditable, setIsEditable] = useState(false); // ค่าเริ่มต้นคือ disabled
     const [showPassword, setShowPassword] = useState(false); // สถานะการแสดงรหัสผ่าน
-    
+    const [usernameCheck, setUsernameCheck] = useState(null);
+    const [errorProfileForm, setErrorProfileForm] = useState("");  // เตือน Error Profile Form 
+
+
 
     // ++++++++++++++ Submit  Reset password  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     const handleResetPass = (e) => { 
@@ -111,7 +113,7 @@ const Profile = () => {
       
     };
 
-    // ++++++++++++++ Close ResetPassForm +++++++++++++++++++++
+    // ++++++++++++++ Close ResetPassForm +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     const closeResetPassForm = () => {
       setShowModal(false)
       setOldPassword(''); //set ค่าว่าง
@@ -120,10 +122,16 @@ const Profile = () => {
       setResetPassError('')   //set ค่าว่าง
     }
     
-
-    // ทำงานแค่ครั้งเดียวเมื่อคอมโพเนนต์โหลด   *********************************************************
+    // ทำงานแค่ครั้งเดียวเมื่อคอมโพเนนต์โหลด   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     useEffect(() => {
-        //+++++++++++   Get Api Data >> USER table ++++++++++++++++++++++++++++++++++++++++++
+
+        // ตรวจสอบว่าโค้ดกำลังรันใน Client-side ************************
+        if (typeof window !== "undefined") {
+          const username = localStorage.getItem("username");
+          setUsernameCheck(username);
+        }
+
+        // +++++++++++   Get Api Data >> USER table ++++++++++++++++++++++++++++++++++++++++++
         const user_id = localStorage.getItem('user_id');  // Get user_id ที่เก็บใน localstorage
         axios.get(`http://127.0.0.1:8000/users/${user_id}`)
         .then((response) => {
@@ -137,26 +145,24 @@ const Profile = () => {
         })
         .catch((error) => {
           console.error(error); // จัดการข้อผิดพลาด
-
-          // Alert เตือนเมื่อเกิดข้อผิดพลาดในการ Register เช่น Username ซ้ำ
-          Swal.fire({  // Library alert warning
-                icon: 'warning', // Warning icon
-                title: error.response.data.detail,
-                confirmButtonText: 'OK', // Confirmation button
-                customClass: {
-                title: 'swal2-title',
-                content: 'swal2-content',
-                confirmButton: 'swal2-confirm',
-                },
-          });
+          // router.push("/"); // ถ้าไม่มี Token ให้ Redirect ไปหน้า Login
           setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
-         
         });
     }, []);  // [] หมายความว่า useEffect จะทำงานแค่ครั้งเดียวเมื่อคอมโพเนนต์โหลด
 
     //EDIT PROFILE FORM เมื่อ click save change button +-+-+-+-+-+-+-+-+-+-+-+--++--+-++-+-
     const handleSaveChange = (e) => {
         e.preventDefault();
+
+        // Validate ข้อมูลก่อนเรียก API
+        if (!username.trim() || !name.trim() || !department.trim() || !position.trim()) {
+          setErrorProfileForm('All fields are required.')
+          return; // หยุดการทำงานถ้าข้อมูลไม่ครบ
+        }else{
+          setErrorProfileForm('')
+          window.location.reload(); // reload หน้า หลังกด Save change
+        }
+
 
         //เก็บข้อมูลจาก Form รวมเป็น Object
         const ProfileFormObj = { 
@@ -178,7 +184,7 @@ const Profile = () => {
 
         .then((response) => {
         console.log("Edit Profile successful:", response.data);
-        window.location.reload();
+
         })
         .catch((error) => {
         console.error("Edit Profile failed:", error.response.data.detail);
@@ -262,23 +268,24 @@ const Profile = () => {
               value={name} 
               disabled={!isEditable} // ควบคุม disabled ด้วย state
               onChange={(e) => setName(e.target.value)} // อัปเดตค่าของ name
-              required 
             />
           </div>
           {/* +++++++++++++++++++++++++++++++++++++++++++++++++++++++ */}
-
           <div className="mb-3">
             <label htmlFor="department" className="form-label">Department</label>
-            <input 
-              type="text" 
+            <select 
               id="department" 
               className="form-control rounded-pill" 
-              placeholder="department" 
               value={department} 
               disabled={!isEditable} // ควบคุม disabled ด้วย state
-              onChange={(e) => setDepartment(e.target.value)} // อัปเดตค่าของ bu
-              required 
-            />
+              onChange={(e) => setDepartment(e.target.value)} // อัปเดตค่าของ department
+            >
+              {/* <option value="">-- Select Department --</option> */}
+              <option value="Digital">Digital</option>
+              <option value="Media">Media</option>
+              <option value="Operations">Operations</option>
+              <option value="Board">Board</option>
+            </select>
           </div>
           <div className="mb-4">
             <label htmlFor="position" className="form-label">Position</label>
@@ -290,23 +297,28 @@ const Profile = () => {
               value={position} 
               disabled={!isEditable} // ควบคุม disabled ด้วย state
               onChange={(e) => setPosition(e.target.value)} // อัปเดตค่าของ position
-              required 
             />
           </div>
-          <button type="submit"   className={`w-100  ${styles.registerBtn}`}>Save change</button>
-       
+
+          {/* ********* แสดงข้อความแจ้งเตือนเมื่อมีข้อผิดพลาด ************* */}
+          {errorProfileForm && (
+            <div className="alert alert-danger mb-3" role="alert">
+              {errorProfileForm}
+            </div>
+          )}
+          {/********* Save change button ********* */}
+          <button type="submit"   className={`w-100 mb-2  ${styles.registerBtn}`}>Save change</button>  
         </form>
 
-      {/* test+++++++++++++++++++++++++++++++++++++++ */}
-
-      {/* ปุ่มเปิด Modal ++++++++++++++++ */}
-      <div className="change-password py-2">
-        <button className="btn btn-secondary  w-100" onClick={() => setShowModal(true)}>
-          Change Password
-        </button>     
-        
-      </div>
-      <Link href="/assets" className={`btn btn-light w-100  ${styles.backBtn}`} >Back</Link>
+        {/* ปุ่มเปิด Modal ++++++++++++++++ */}
+        {!usernameCheck?.includes('@gmail') && (
+          <div className="change-password pb-2">
+            <button className="btn btn-secondary w-100" onClick={() => setShowModal(true)}>
+              Change Password
+            </button>
+          </div> 
+        )}
+        <Link href="/assets" className={`btn btn-light w-100  ${styles.backBtn}`} >Back</Link>
 
         {/* Modal Change password ++++++++++++++++++++ */}
         {showModal && (
@@ -373,7 +385,7 @@ const Profile = () => {
                     <div className="alert alert-danger pb-3" role="alert">
                       {resetPassError}
                     </div>
-                  )}
+                    )}
                     <button type="submit" className="btn btn-secondary w-100">
                       Save
                     </button>
@@ -385,14 +397,9 @@ const Profile = () => {
           </div>
         )}
 
-
-
-
-
-
-
       </div>
     </div>
+    
     <Footer/>
     </ProtectedRoute>
     </>
