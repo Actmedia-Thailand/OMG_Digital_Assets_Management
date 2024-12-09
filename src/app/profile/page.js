@@ -38,6 +38,17 @@ const Profile = () => {
     const [usernameCheck, setUsernameCheck] = useState(null);
     const [errorProfileForm, setErrorProfileForm] = useState("");  // เตือน Error Profile Form 
 
+    // Department array data  ++++++++++++++++++++++++++++++++++++++++++++++++++
+    const departmentArr = [
+      { name: "Digital", positions: ["Software Engineer", "Web Developer", "UI/UX Designer", "Digital Strategist"] },
+      { name: "Media", positions: ["Content Creator", "Video Editor", "Social Media Manager"] },
+      { name: "Operations", positions: ["Operations Manager", "Project Coordinator", "Logistics Specialist"] },
+      { name: "Board", positions: ["CEO", "CFO", "COO"] },
+    ];
+
+    // ใช้ค้นหาข้อมูลใน array โดยจะส่งกลับค่า ตัวแรกที่ตรงเงื่อนไข ที่กำหนดใน callback function (หรือ undefined หากไม่พบ)
+    const selectedDepartment = departmentArr.find((dept) => dept.name === department);
+    console.log(selectedDepartment)
 
 
     // ++++++++++++++ Submit  Reset password  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -270,42 +281,56 @@ const Profile = () => {
               onChange={(e) => setName(e.target.value)} // อัปเดตค่าของ name
             />
           </div>
-          {/* +++++++++++++++++++++++++++++++++++++++++++++++++++++++ */}
+
+          {/* ********* Department options *********** */}
           <div className="mb-3">
-            <label htmlFor="department" className="form-label">Department</label>
-            <select 
-              id="department" 
-              className="form-control rounded-pill" 
-              value={department} 
-              disabled={!isEditable} // ควบคุม disabled ด้วย state
-              onChange={(e) => setDepartment(e.target.value)} // อัปเดตค่าของ department
-            >
-              {/* <option value="">-- Select Department --</option> */}
-              <option value="Digital">Digital</option>
-              <option value="Media">Media</option>
-              <option value="Operations">Operations</option>
-              <option value="Board">Board</option>
-            </select>
-          </div>
-          <div className="mb-4">
-            <label htmlFor="position" className="form-label">Position</label>
-            <input 
-              type="text" 
-              id="position" 
-              className="form-control rounded-pill" 
-              placeholder="position" 
-              value={position} 
-              disabled={!isEditable} // ควบคุม disabled ด้วย state
-              onChange={(e) => setPosition(e.target.value)} // อัปเดตค่าของ position
-            />
+              <label htmlFor="department" className="form-label">Department</label>
+              <select
+                id="department"
+                className="form-control rounded-pill"
+                value={department}
+                disabled={!isEditable} // ควบคุม disabled ด้วย state
+                onChange={(e) => {
+                  setDepartment(e.target.value); // อัปเดต department ที่เลือก
+                  setPosition(""); // รีเซ็ต position เมื่อเปลี่ยน department
+                }}
+              >
+                {/* <option value="">-- Select Department --</option> */}
+                {departmentArr.map((dept) => (
+                  <option key={dept.name} value={dept.name}>
+                    {dept.name}
+                  </option>
+                ))}
+              </select>
           </div>
 
-          {/* ********* แสดงข้อความแจ้งเตือนเมื่อมีข้อผิดพลาด ************* */}
+          {/* *************** Position options ******************** */}
+          <div className="mb-4">
+              <label htmlFor="position" className="form-label">Position</label>
+              <select
+                id="position"
+                className="form-control rounded-pill"
+                value={position}
+                onChange={(e) => setPosition(e.target.value)} // อัปเดตตำแหน่งงานที่เลือก
+                disabled={!isEditable} // ควบคุม disabled ด้วย state
+              >
+                <option value="">-- Select Position --</option>
+                {selectedDepartment &&
+                  selectedDepartment.positions.map((pos, index) => ( // Loop จาก  Positions Array
+                    <option key={index} value={pos}>
+                      {pos}
+                    </option>
+                ))}
+              </select>
+          </div>
+
+          {/* ********* แสดงข้อความแจ้งเตือนเมื่อมีข้อผิดพลาด !!!  ************* */}
           {errorProfileForm && (
             <div className="alert alert-danger mb-3" role="alert">
               {errorProfileForm}
             </div>
           )}
+
           {/********* Save change button ********* */}
           <button type="submit"   className={`w-100 mb-2  ${styles.registerBtn}`}>Save change</button>  
         </form>

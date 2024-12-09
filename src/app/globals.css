@@ -60,4 +60,8 @@ a {
   opacity: 1;
 } */
 
-
+/* กำหนดสีพื้นหลังเมื่อ hover หรือ focus */
+select.form-control option:hover,
+select.form-control option:focus {
+  background-color: #F2F2F2 !;
+}

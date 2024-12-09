@@ -5,6 +5,7 @@ import React from 'react';
 import { useState, useEffect} from "react";
 import Link from 'next/link';
 import styles from './register.module.css';  // css module แยกตาม component
+import './register.css';
 import Image from 'next/image';  // รูปแบบ Next ทำให้โหลดเร็ว
 import { useRouter } from 'next/navigation'; // ใช้ next/navigation สำหรับ App Router
 import axios from "axios";  // ใช้เรียก api
@@ -23,6 +24,20 @@ const Register = () => {
     const [level, setLevel] = useState('1');
     const [errorRegisterForm, setErrorRegisterForm] = useState("");  // เตือน Error Profile Form 
     const [loading, setLoading] = useState(true); // สถานะสำหรับ Loading
+
+
+    // Department array data +++++++++++++++++++++++++++++++++++
+    const departmentArr = [
+      { name: "Digital", positions: ["Software Engineer", "Web Developer", "UI/UX Designer", "Digital Strategist"] },
+      { name: "Media", positions: ["Content Creator", "Video Editor", "Social Media Manager"] },
+      { name: "Operations", positions: ["Operations Manager", "Project Coordinator", "Logistics Specialist"] },
+      { name: "Board", positions: ["CEO", "CFO", "COO"] },
+    ];
+
+    // ใช้ค้นหาข้อมูลใน array โดยจะส่งกลับค่า ตัวแรกที่ตรงเงื่อนไข ที่กำหนดใน callback function (หรือ undefined หากไม่พบ)
+    const selectedDepartment = departmentArr.find((dept) => dept.name === department);
+    console.log(selectedDepartment)
+
 
     useEffect(() => {
       setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
@@ -172,32 +187,51 @@ const Register = () => {
                 onChange={(e) => setName(e.target.value)} // อัปเดตค่าของ name
               />
             </div>
+
+            {/* ********* Department option *********** */}
             <div className="mb-3">
               <label htmlFor="department" className="form-label">Department</label>
-              <select 
-                id="department" 
-                className="form-control rounded-pill" 
-                value={department} 
-                onChange={(e) => setDepartment(e.target.value)} // อัปเดตค่าของ department
+              <select
+                id="department"
+                className="form-control rounded-pill department-select"
+                value={department}
+                onChange={(e) => {
+                  setDepartment(e.target.value); // อัปเดต department ที่เลือก
+                  setPosition(""); // รีเซ็ต position เมื่อเปลี่ยน department
+                }}
               >
                 <option value="">-- Select Department --</option>
-                <option value="Digital">Digital</option>
-                <option value="Media">Media</option>
-                <option value="Operations">Operations</option>
-                <option value="Board">Board</option>
+                {departmentArr.map((dept) => (
+                  <option key={dept.name} value={dept.name}>
+                    {dept.name}
+                  </option>
+                ))}
               </select>
             </div>
+
+            {/* *************** Position ******************** */}
             <div className="mb-4">
               <label htmlFor="position" className="form-label">Position</label>
-              <input 
-                type="text" 
-                id="position" 
-                className="form-control rounded-pill" 
-                placeholder="position" 
-                value={position} 
-                onChange={(e) => setPosition(e.target.value)} // อัปเดตค่าของ position
-              />
+              <select
+                id="position"
+                className="form-control rounded-pill"
+                value={position}
+                onChange={(e) => setPosition(e.target.value)} // อัปเดตตำแหน่งงานที่เลือก
+                disabled={!department} // ปิดการใช้งานหากยังไม่ได้เลือก department
+              >
+                <option value="">-- Select Position --</option>
+                {selectedDepartment &&
+                  selectedDepartment.positions.map((pos, index) => ( // Loop จาก  Positions Array
+                    <option key={index} value={pos}>
+                      {pos}
+                    </option>
+                ))}
+              </select>
             </div>
+
+            
+
+            {/* Alert Error !! */}
             {errorRegisterForm && (
                 <div className="alert alert-danger pb-3" role="alert">
                   {errorRegisterForm}

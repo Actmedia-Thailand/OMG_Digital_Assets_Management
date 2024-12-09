@@ -19,7 +19,7 @@ const Login = () => {
   const router = useRouter(); //redirect page
   const [isLoading, setIsLoading] = useState(true); //Loading
 
-  // ฟังก์ชันจัดการเมื่อ click submit form
+  // ฟังก์ชันจัดการเมื่อ click submit form  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -67,7 +67,7 @@ const Login = () => {
           localStorage.setItem("department", response.data.user.department); //เก็บ department ใน localstorage
           localStorage.setItem("position", response.data.user.position); //เก็บ position ใน localstorage
           router.push("/assets"); // เปลี่ยนไปหน้า assets
-          setIsLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+          // setIsLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
           
         } else {
           console.log("Login failed: Try again");
