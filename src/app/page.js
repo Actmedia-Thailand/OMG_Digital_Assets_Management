@@ -66,6 +66,7 @@ const Login = () => {
           localStorage.setItem("name", response.data.user.name); //เก็บ name ใน localstorage
           localStorage.setItem("department", response.data.user.department); //เก็บ department ใน localstorage
           localStorage.setItem("position", response.data.user.position); //เก็บ position ใน localstorage
+          localStorage.setItem("level", response.data.user.level); //เก็บ position ใน localstorage
           router.push("/assets"); // เปลี่ยนไปหน้า assets
           // setIsLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
           

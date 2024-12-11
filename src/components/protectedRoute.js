@@ -26,7 +26,7 @@ const ProtectedRoute = ({ children }) => {
     const user_id = localStorage.getItem('user_id');  // Get user_id ที่เก็บใน localstorage
     axios.get(`http://127.0.0.1:8000/users/${user_id}`)
     .then((response) => {
-      console.log(response.data); //   ******* ข้อมูลจะอยู่ใน `response.data` ********
+      // console.log(response.data); //   ******* ข้อมูลจะอยู่ใน `response.data` ********
     })
     .catch((error) => {
       console.error(error); // จัดการข้อผิดพลาด

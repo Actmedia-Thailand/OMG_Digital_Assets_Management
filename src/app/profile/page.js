@@ -314,7 +314,7 @@ const Profile = () => {
                 onChange={(e) => setPosition(e.target.value)} // อัปเดตตำแหน่งงานที่เลือก
                 disabled={!isEditable} // ควบคุม disabled ด้วย state
               >
-                <option value="">-- Select Position --</option>
+                {!position && <option value="">-- Select Position --</option>} {/* แสดงเฉพาะเมื่อ position เป็นค่าว่าง */}
                 {selectedDepartment &&
                   selectedDepartment.positions.map((pos, index) => ( // Loop จาก  Positions Array
                     <option key={index} value={pos}>
