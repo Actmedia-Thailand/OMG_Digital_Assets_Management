@@ -168,18 +168,27 @@ const Permission = () => {
             <div className="d-flex justify-content-center min-vh-100 bg-light  mt-5">
                 <div className="container py-5">
                     <h4 className="mb-4">Permission Management</h4>
-                    <div className="search-box d-flex justify-content-end">
-                        <div className="col-12 col-md-12 col-xl-4 mb-3">
-                            {/* เพิ่ม onChange และ bind searchQuery */}
-                            <input
-                                type="text"
-                                className="form-control form-control-sm"  // ใช้ form-control-sm เพื่อทำให้ input เล็กลง
-                                placeholder="Search..."
-                                value={searchQuery}
-                                onChange={handleSearchChange}
-                            />
+                    {/* Search Box */}
+                    <div className="search-box mb-4">
+                        <div className="row justify-content-end">
+                            <div className="col-12 col-sm-8 col-md-6 col-lg-4">
+                                <div className="input-group">
+                                    <span className="input-group-text bg-white border-end-0">
+                                        <i className="bi bi-search"></i>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        className="form-control border-start-0 ps-0"
+                                        placeholder="Search ..."
+                                        value={searchQuery}
+                                        onChange={handleSearchChange}
+                                        aria-label="Search"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    {/* End search box */}
                     {/* Data Table ++++++++++++++++++++++++++++++++++ */}
                     <div className="table-responsive table-container">
                         <table className="table table-bordered table-hover align-middle">
@@ -234,21 +243,13 @@ const Permission = () => {
                                                         className="form-select" 
                                                         value={level[user.id] || user.level} // ถ้าไม่มีใน levels ให้ใช้ค่าเดิมจาก user.level
                                                         onChange={(e) => handleLevelChange(e, user.id)} 
+                                                        disabled // เพิ่ม disabled เพื่อปิดการใช้งาน select
                                                     >
                                                         <option value="1">User</option>
                                                     </select>
                                                     )
                                                 }
-                                                {/* <select 
-                                                    className="form-select" 
-                                                    value={level[user.id] || user.level} // ถ้าไม่มีใน levels ให้ใช้ค่าเดิมจาก user.level
-                                                    onChange={(e) => handleLevelChange(e, user.id)} 
-                                                >
-                                                    <option value="1">User</option>
-                                                    <option value="2">User plus</option>
-                                                    <option value="3">General</option>
-                                                    <option value="4">Admin</option>
-                                                </select> */}
+                         
                                             </td>
                                             <td>
                                                 <button 

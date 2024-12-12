@@ -71,6 +71,33 @@
   margin-top: 116px;
 }
 
+
+/* Dropdown styles ++++++ ส่วนชื่อ User ตอนกด dropdown  */
+.custom-dropdown {
+  display: block;
+  position: absolute;
+  top: 38px;
+  right: 0;
+  background-color: white;
+  box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+  border-radius: 5px;
+}
+
+.dropdown-user-info {
+  padding: 8px 16px;
+  margin-bottom: 0;
+  border-bottom: 1px solid #eee;
+  color: #6c757d;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropdown-user-info i {
+  font-size: 16px;
+}
+
 /* === เพิ่มความยืดหยุ่นสำหรับหน้าจอขนาดเล็ก === */
 @media (max-width: 768px) {
   .navbar-nav {

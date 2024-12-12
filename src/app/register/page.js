@@ -36,7 +36,7 @@ const Register = () => {
 
     // ใช้ค้นหาข้อมูลใน array โดยจะส่งกลับค่า ตัวแรกที่ตรงเงื่อนไข ที่กำหนดใน callback function (หรือ undefined หากไม่พบ)
     const selectedDepartment = departmentArr.find((dept) => dept.name === department);
-    console.log(selectedDepartment)
+    // console.log(selectedDepartment)
 
 
     useEffect(() => {
@@ -101,7 +101,7 @@ const Register = () => {
         router.push('/'); // Redirect ไปหน้า Login
       })
       .catch((error) => {
-        console.error("Registration failed:", error.response.data.detail);
+        console.error("Registration failed:", error);
 
         // Alert เตือนเมื่อเกิดข้อผิดพลาดในการ Register เช่น Username ซ้ำ **********************
         Swal.fire({  // Library alert warning
