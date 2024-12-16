@@ -37,7 +37,7 @@
 /* เมื่อ Hover */
 .navbar-nav .nav-link:hover {
   color: #fff; /* เปลี่ยนสีข้อความเมื่อชี้เมาส์ */
-  background-color: #35C0F6; /* เปลี่ยนพื้นหลังเมื่อชี้เมาส์ */
+  background-color: #118DCE; /* เปลี่ยนพื้นหลังเมื่อชี้เมาส์ */
   text-decoration: none; /* เอาเส้นใต้ลิงก์ออก */
 }
 
@@ -64,7 +64,7 @@
 /* === Active Link === */
 .navbar-nav .nav-link.active {
   color: #fff; /* สีข้อความของลิงก์ที่ active */
-  background-color: #35C0F6; /* สีพื้นหลังลิงก์ที่ active */
+  background-color: #118DCE; /* สีพื้นหลังลิงก์ที่ active */
 }
 
 .content-marginTop{

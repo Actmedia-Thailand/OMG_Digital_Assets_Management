@@ -1,0 +1,7 @@
+
+/* มือถือแนวตั้ง */
+@media (max-width: 767px) and (orientation: portrait) {
+    .maginTopAssets{
+        margin-top: 180px !important;
+    }
+}

@@ -1,5 +1,5 @@
 "use client"; // บอกให้ Next.js รู้ว่านี่เป็น Client-Side Component
-
+import './assets.css';
 import { useState, useEffect } from "react";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -10,9 +10,10 @@ import { useViews } from "@/hook/useViews";
 import ProtectedRoute from "@/components/protectedRoute"; // Protect route if user don't have token
 import Table7 from "@/components/table7";
 
+
 const Assets = () => {
-  const [showSidebarLeft, setShowSidebarLeft] = useState(false); // Left sidebar  สำหรับเก็บตัวส่ง prop ไปให้ Header and Table6
-  const [showSidebarRight, setShowSidebarRight] = useState(true); // Right sidebar  สำหรับเก็บตัวส่ง prop ไปให้ Header and Table6
+  const [showSidebarLeft, setShowSidebarLeft] = useState(true); // Left sidebar  สำหรับเก็บตัวส่ง prop ไปให้ Header and Table6
+  const [showSidebarRight, setShowSidebarRight] = useState(false); // Right sidebar  สำหรับเก็บตัวส่ง prop ไปให้ Header and Table6
   const { data, isLoading, isError, error } = useAssets();
   const {
     data: dataView,
@@ -62,7 +63,7 @@ const Assets = () => {
     "Makro",
   ];
 
-  const columns = [
+  const columns = [ // หัวข้อของตาราง *************************
     {
       accessorKey: "MACADDRESS",
       header: "MAC Address",
@@ -182,7 +183,7 @@ const Assets = () => {
             setShowSidebarRight={setShowSidebarRight}
           />
           <div
-          className="flex-grow-1"
+          className="flex-grow-1 maginTopAssets"
           style={{
             overflowX: "clip",
             width: "100%",
