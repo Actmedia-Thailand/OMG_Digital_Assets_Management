@@ -63,7 +63,7 @@
 
 /* === Active Link === */
 .navbar-nav .nav-link.active {
-  color: #fff; /* สีข้อความของลิงก์ที่ active */
+  color: #fff !important; /* สีข้อความของลิงก์ที่ active */
   background-color: #118DCE; /* สีพื้นหลังลิงก์ที่ active */
 }
 

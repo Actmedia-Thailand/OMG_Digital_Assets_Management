@@ -5,7 +5,7 @@ import React from 'react';
 import { useState,useEffect} from "react";
 // import Link from 'next/link';
 import './permission.css';
-// import { useRouter } from 'next/navigation'; // ใช้ next/navigation สำหรับ App Router
+import { useRouter } from 'next/navigation'; // ใช้ next/navigation สำหรับ App Router
 import axios from "axios";  // ใช้เรียก api
 import Swal from 'sweetalert2'; // Import SweetAlert2
 
@@ -22,55 +22,73 @@ const Permission = () => {
     const [usersData, setUsersData] = useState([]); // เก็บข้อมูล All user จาก api
     const [filteredUsers, setFilteredUsers] = useState([]); 
     const [searchQuery, setSearchQuery] = useState('');
+    const router = useRouter(); // Use redirect page
 
     // ทำงานแค่ครั้งเดียวเมื่อคอมโพเนนต์โหลด Get api ข้อมูลผู้ให้สิทธิ์ และ All user   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    useEffect(() => {
+    useEffect(() => { 
+        const user_level = localStorage.getItem("level"); // ดึง Token จาก localStorage
+        const token = localStorage.getItem("access_token"); // ดึง Token จาก localStorage
+        const username = localStorage.getItem("username"); // ดึง Token จาก localStorage
+        // console.log(user_level);
+        if(user_level === "1" || user_level === "2"){
+            localStorage.removeItem("user_id");
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("username");
+            localStorage.removeItem("name");
+            localStorage.removeItem("department");
+            localStorage.removeItem("position");
+            localStorage.removeItem("level");
+            router.push("/"); // ถ้าไม่มี Token or  username ให้ Redirect ไปหน้า Login
+        }else if ((!token) || (!username)) {
+            router.push("/"); // ถ้าไม่มี Token or  username ให้ Redirect ไปหน้า Login
+        }else{
 
-        // *************************************   Get Api >> Authorizer user ข้อมูลผู้ให้สิทธิ์  ********************************************************
-        const user_id = localStorage.getItem('user_id');  // Get user_id ที่เก็บใน localstorage
-        axios.get(`http://127.0.0.1:8000/users/${user_id}`)
-        .then((response) => {
-          console.log(response.data); //   ******* ข้อมูลจะอยู่ใน `response.data` ********
-          setLevelAuthorizer(response.data.level)
-        //   setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
-        })
-        .catch((error) => {
-          console.error(error); // จัดการข้อผิดพลาด
-          setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
-        });
+            // *************************************   Get Api >> Authorizer user ข้อมูลผู้ให้สิทธิ์  ********************************************************
+            const user_id = localStorage.getItem('user_id');  // Get user_id ที่เก็บใน localstorage
+            axios.get(`http://127.0.0.1:8000/users/${user_id}`)
+            .then((response) => {
+            console.log(response.data); //   ******* ข้อมูลจะอยู่ใน `response.data` ********
+            setLevelAuthorizer(response.data.level)
+            //   setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+            })
+            .catch((error) => {
+            console.error(error); // จัดการข้อผิดพลาด
+            setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+            });
 
-        // ************************* Get Api >> ALL USER  ผู้ใช้ทั้งหมดที่อยู่ Department เดียวกับผู้ให้สิทธิ์ *************************
-        const departmentAuthorizer = localStorage.getItem('department'); // ดึง department จาก localStorage
-        const level = localStorage.getItem('level'); // ดึง level จาก localStorage       
-        axios.get(`http://127.0.0.1:8000/users`)
-        .then((responseAllUser) => {
+            // ************************* Get Api >> ALL USER  ผู้ใช้ทั้งหมดที่อยู่ Department เดียวกับผู้ให้สิทธิ์ *************************
+            const departmentAuthorizer = localStorage.getItem('department'); // ดึง department จาก localStorage
+            const level = localStorage.getItem('level'); // ดึง level จาก localStorage       
+            axios.get(`http://127.0.0.1:8000/users`)
+            .then((responseAllUser) => {
 
-            const allUsers = responseAllUser.data;
-            // ***************** กรองข้อมูลตาม level ************************************
-            if (level === "3") {
-                // หาก level = 3 กรองข้อมูลโดยเปรียบเทียบ department ของผู้ให้สิทธิ์ และไม่แสดง user ผู้ให้สิทธิ์ *************************************
-                const filteredByDepartment = allUsers.filter((user) => user.department === departmentAuthorizer && user.id != user_id);
-                setUsersData(filteredByDepartment); // ตั้งค่าข้อมูลที่กรองแล้ว
-                setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
-            } else if (level === "4") { // Admin *************************************
-                // หาก level = 4 ให้แสดงข้อมูลทั้งหมด
-                setUsersData(allUsers); // ใช้ข้อมูลผู้ใช้ทั้งหมด
-                setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
-            }else{
-                // หาก level ไม่เข้าเงื่อนไข  setUsersData ให้ว่าง ******************
-                setUsersData([]); // ใช้ข้อมูลผู้ใช้ทั้งหมด
-                setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
-            }
-            //   console.log(responseAllUser.data); //   ******* ข้อมูลจะอยู่ใน `responseAllUser.data` ********
-            //   setUsersData(responseAllUser.data) // setUsersData กรณีดึงข้อมูล User มาแสดงทั้งหมด 
-            // setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
-        })
-        .catch((AllUserError) => {
-          console.error(AllUserError); // จัดการข้อผิดพลาด
-          // router.push("/"); // ถ้าไม่มี Token ให้ Redirect ไปหน้า Login
-          window.location.reload();
-          setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
-        });
+                const allUsers = responseAllUser.data;
+                // ***************** กรองข้อมูลตาม level ************************************
+                if (level === "3") {
+                    // หาก level = 3 กรองข้อมูลโดยเปรียบเทียบ department ของผู้ให้สิทธิ์ และไม่แสดง user ผู้ให้สิทธิ์ *************************************
+                    const filteredByDepartment = allUsers.filter((user) => user.department === departmentAuthorizer && user.id != user_id);
+                    setUsersData(filteredByDepartment); // ตั้งค่าข้อมูลที่กรองแล้ว
+                    setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+                } else if (level === "4") { // Admin *************************************
+                    // หาก level = 4 ให้แสดงข้อมูลทั้งหมด
+                    setUsersData(allUsers); // ใช้ข้อมูลผู้ใช้ทั้งหมด
+                    setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+                }else{
+                    // หาก level ไม่เข้าเงื่อนไข  setUsersData ให้ว่าง ******************
+                    setUsersData([]); // ใช้ข้อมูลผู้ใช้ทั้งหมด
+                    setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+                }
+                //   console.log(responseAllUser.data); //   ******* ข้อมูลจะอยู่ใน `responseAllUser.data` ********
+                //   setUsersData(responseAllUser.data) // setUsersData กรณีดึงข้อมูล User มาแสดงทั้งหมด 
+                // setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+            })
+            .catch((AllUserError) => {
+            console.error(AllUserError); // จัดการข้อผิดพลาด
+            // router.push("/"); // ถ้าไม่มี Token ให้ Redirect ไปหน้า Login
+            window.location.reload();
+            setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+            });
+        }
     }, []);
     // console.log("set"+levelAuthorizer);
     // console.log(usersData);// Debug เชคข้อมูล All user ที่ดึงมาจาก api เก็บใน useState >> usersData *****************
@@ -163,7 +181,7 @@ const Permission = () => {
 
     return (
         <>
-        <ProtectedRoute>
+        {/* <ProtectedRoute> */}
         <Topbar fixedTop="fixed-top"/>
             <div className="d-flex justify-content-center min-vh-100 bg-light  mt-5">
                 <div className="container py-5">
@@ -284,7 +302,7 @@ const Permission = () => {
                 </div>
             </div>
         <Footer/>
-        </ProtectedRoute>
+        {/* </ProtectedRoute> */}
         </>
     );
 }

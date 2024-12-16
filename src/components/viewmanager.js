@@ -27,8 +27,9 @@ const ViewManager = ({
   const [newLevelView, setNewLevelView] = useState(); // ++++++++++++++++ เก็บชื่อใหม่สำหรับ Rename
   const [searchTerm, setSearchTerm] = useState(""); // ++++++++++++++++ เพิ่ม state สำหรับเก็บคำค้นหา
   const dropdownRefs = useRef([]); // Store refs for each dropdown
-  const user_id = localStorage.getItem("user_id");  // Get user_id จาก localStorage
-  // console.log(user_id);
+  const user_id = localStorage.getItem("user_id"); // Get user_id จาก localStorage
+  const user_level = localStorage.getItem("level"); // Get user_id จาก localStorage
+  //   console.log("user_level:",user_level);
 
   // Toggle specific dropdown
   const toggleDropdown = (index) => {
@@ -56,7 +57,7 @@ const ViewManager = ({
 
   // ฟังชั่นสำหรับดึงข้อมูลสำหรับ Rename
   const handleRename = (view) => {
-	console.log(levelView);
+    console.log(levelView);
     console.log("Renaming view:", view.name, view.levelView);
     setSelectedView(view); // ++++++++++++++++ ตั้งค่า View ที่เลือก
     setNewViewName(view.name); // ++++++++++++++++ ดึงชื่อ View ปัจจุบันมาใส่ใน input
@@ -75,8 +76,16 @@ const ViewManager = ({
 
   // Confirm Rename
   const confirmRename = () => {
-
-    console.log("Renamed view & levelView :", selectedView.name,"and",selectedView.levelView, "to", newViewName ,"and",newLevelView); // ++++++++++++++++ Console log ชื่อใหม่
+    console.log(
+      "Renamed view & levelView :",
+      selectedView.name,
+      "and",
+      selectedView.levelView,
+      "to",
+      newViewName,
+      "and",
+      newLevelView
+    ); // ++++++++++++++++ Console log ชื่อใหม่
     // handleEditView(selectedView, newViewName,newLevelView);
     handleEditView(selectedView, newViewName, newLevelView);
     setIsRenameModalOpen(false); // ++++++++++++++++ ปิด Rename Modal
@@ -96,7 +105,6 @@ const ViewManager = ({
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
-
 
   return (
     <>
@@ -120,7 +128,7 @@ const ViewManager = ({
                 />
               </div>
 
-			  {/* My view ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */}
+              {/* My view ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */}
               <div className="d-flex justify-content-between">
                 <h6 className="card-title fw-bold">My views</h6>
                 {/* +++++++++ ปุ่ม Add views ++++++++++ */}
@@ -130,112 +138,149 @@ const ViewManager = ({
                 ></i>
               </div>
               <hr />
-			  	{/*  Filter My View */}
-			  	{filteredViews
-					.filter(view => view.levelView === 1 && view.id_user === user_id) // กรองข้อมูลตาม levelView และ id_user
-					.map((view, index) => (
-						<div
-							key={`myview-${index}`}  // เปลี่ยน key ให้เป็นเอกลักษณ์
-							className="d-flex align-items-center justify-content-between py-2 px-2 mb-1 hover-list-view-bg"
-						>
-							<i className="bi bi-table me-2"></i>
-							<button
-								className="btn btn-link text-start text-dark p-0 text-decoration-none view-menu-text"
-								onClick={() => handleButtonClick(view)}
-							>
-							{view.name}
-							</button>
-						
-							{/* Dropdown Menu */}
-							<div
-								className="dropdown"
-								ref={(el) => (dropdownRefs.current[`myview-${index}`] = el)}  // เปลี่ยน ref key
-							>
-								<button
-								className="btn btn-light btn-sm"
-								onClick={() => toggleDropdown(`myview-${index}`)}  // เปลี่ยน toggle key
-								>
-								<i className="bi bi-three-dots-vertical"></i>
-								</button>
+              {/*  Filter My View */}
+			  <div className="views-section">
+              {filteredViews
+                .filter(
+                  (view) => view.levelView === 1 && view.id_user === user_id
+                ) // กรองข้อมูลตาม levelView และ id_user
+                .map((view, index) => (
+                  <div
+                    key={`myview-${index}`} // เปลี่ยน key ให้เป็นเอกลักษณ์
+                    className="d-flex align-items-center justify-content-between py-2 px-2 mb-1 hover-list-view-bg"
+                  >
+                    <i className="bi bi-table me-2"></i>
+                    <button
+                      className="btn btn-link text-start text-dark p-0 pe-1 text-decoration-none view-menu-text"
+                      onClick={() => handleButtonClick(view)}
+                    >
+                      {view.name}
+                    </button>
 
-								{isDropdownOpen === `myview-${index}` && (
-								<ul
-									className="dropdown-menu show mt-1 shadow-sm"
-									style={{ display: "block" }}
-								>
-									<li>
-									<button
-										className="dropdown-item"
-										onClick={() => handleRename(view)}
-									>
-										Rename
-									</button>
-									</li>
-									<li>
-									<button
-										className="dropdown-item text-danger"
-										onClick={() => handleDelete(view)}
-									>
-										Delete
-									</button>
-									</li>
-								</ul>
-								)}
+                    {/* Dropdown Menu */}
+                    <div
+                      className="dropdown"
+                      ref={(el) =>
+                        (dropdownRefs.current[`myview-${index}`] = el)
+                      } // เปลี่ยน ref key
+                    >
+                      <button
+                        className="btn btn-light btn-sm"
+                        onClick={() => toggleDropdown(`myview-${index}`)} // เปลี่ยน toggle key
+                      >
+                        <i className="bi bi-three-dots-vertical"></i>
+                      </button>
 
-							</div>
-						</div>
-				))}
+                      {isDropdownOpen === `myview-${index}` && (
+                        <ul
+                          className="dropdown-menu show mt-1 shadow-sm"
+                          style={{ 
+							display: "block",
+							position: "absolute",
+							right: 0,
+							zIndex: 1000,
+							padding: "0.25rem 0", // ลด padding ด้านบนและล่าง
+							minWidth: "120px",    // กำหนดความกว้างขั้นต่ำให้แคบลง
+							fontSize: "0.875rem"  // ลดขนาดตัวอักษร
+						  }}
+                        >
+                          <li>
+                            <button
+                              className="dropdown-item"
+                              onClick={() => handleRename(view)}
+                            >
+                              Rename
+                            </button>
+                          </li>
+                          <li>
+                            <button
+                              className="dropdown-item text-danger"
+                              onClick={() => handleDelete(view)}
+                            >
+                              Delete
+                            </button>
+                          </li>
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                ))}
+				</div>
 
-
-			  {/* All Views  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/}
+              {/* All Views  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/}
               <div className="d-flex justify-content-between pt-3">
                 <h6 className="card-title fw-bold">All views</h6>
               </div>
               <hr />
-			  	{/* Filter All View */}
-			  	{filteredViews
-					.filter(view => view.levelView === 2) // กรองข้อมูลตาม levelView
-					.map((view, index) => (
-						<div
-						key={`allview-${index}`}  // เปลี่ยน key ให้เป็นเอกลักษณ์
-						className="d-flex align-items-center justify-content-between py-2 px-2 mb-1 hover-list-view-bg"
-						>
-						<i className="bi bi-table me-2"></i>
-						<button
-							className="btn btn-link text-start text-dark p-0 text-decoration-none view-menu-text"
-							onClick={() => handleButtonClick(view)}
-						>
-							{view.name}
-						</button>
+              {/* Filter All View */}
+			  <div className="views-section">
+              {filteredViews
+                .filter((view) => view.levelView === 2) // กรองข้อมูลตาม levelView
+                .map((view, index) => (
+                  <div
+                    key={`allview-${index}`} // เปลี่ยน key ให้เป็นเอกลักษณ์
+                    className="d-flex align-items-center justify-content-between py-2 px-2 mb-1 hover-list-view-bg"
+                  >
+                    <i className="bi bi-table me-2"></i>
+                    <button
+                      className="btn btn-link text-start text-dark p-0 text-decoration-none view-menu-text"
+                      onClick={() => handleButtonClick(view)}
+                    >
+                      {view.name}
+                    </button>
 
-						{/* Dropdown Menu */}
-						<div
-							className="dropdown"
-							ref={(el) => (dropdownRefs.current[`allview-${index}`] = el)}  // เปลี่ยน ref key
-						>
-							{/* // เปลี่ยน toggle key */}
-							<button className="btn btn-light btn-sm" onClick={() => toggleDropdown(`allview-${index}`)}>  
-								<i className="bi bi-three-dots-vertical"></i>
-							</button>
+                    {/* Dropdown Menu */}
+                    <div
+                      className="dropdown"
+                      ref={(el) =>
+                        (dropdownRefs.current[`allview-${index}`] = el)
+                      } // เปลี่ยน ref key
+                    >
+                      {/* เปลี่ยน toggle key แสดงปุ่มเฉพาะเมื่อ user_level ไม่ใช่ 1 */}
+                      {user_level !== "1" && (
+                        <button
+                          className="btn btn-light btn-sm"
+                          onClick={() => toggleDropdown(`allview-${index}`)}
+                        >
+                          <i className="bi bi-three-dots-vertical"></i>
+                        </button>
+                      )}
 
-							{isDropdownOpen === `allview-${index}` && (
-							<ul className="dropdown-menu show mt-1 shadow-sm" style={{ display: "block" }}>
-								<li>
-									<button className="dropdown-item" onClick={() => handleRename(view)}>
-									Rename
-									</button>
-								</li>
-								<li>
-									<button className="dropdown-item text-danger" onClick={() => handleDelete(view)} >
-										Delete
-									</button>
-								</li>
-							</ul>
-							)}
-						</div>
-						</div>
-				))}
-
+                      {isDropdownOpen === `allview-${index}` && (
+                        <ul
+                          className="dropdown-menu show mt-1 shadow-sm"
+                          style={{ 
+							display: "block",
+							position: "absolute",
+							right: 0,
+							zIndex: 1000,
+							padding: "0.25rem 0", // ลด padding ด้านบนและล่าง
+							minWidth: "120px",    // กำหนดความกว้างขั้นต่ำให้แคบลง
+							fontSize: "0.875rem"  // ลดขนาดตัวอักษร
+						  }}
+                        >
+                          <li>
+                            <button
+                              className="dropdown-item"
+                              onClick={() => handleRename(view)}
+                            >
+                              Rename
+                            </button>
+                          </li>
+                          <li>
+                            <button
+                              className="dropdown-item text-danger"
+                              onClick={() => handleDelete(view)}
+                            >
+                              Delete
+                            </button>
+                          </li>
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                ))}
+				</div>
             </div>
           </div>
 
@@ -267,18 +312,26 @@ const ViewManager = ({
                       value={viewName}
                       onChange={(e) => setViewName(e.target.value)}
                     />
+
+					{user_level !== "1" && (
                     <div className="option-view pt-4">
                       {/* Dropdown เลือกประเภท View ************ */}
-                      <p>Select a view category :</p>
-                      <select
-                        className="form-select"
-                        value={levelView}
-                        onChange={(e) => setLevelView(e.target.value)}
-                      >
-                        <option value="1">My Views</option>
-                        <option value="2">All Views</option>
-                      </select>
+						{/* Only show the dropdown if user_level is not 1 */}
+						
+							<>
+							<p>Select a view category :</p>
+							<select
+								className="form-select"
+								value={levelView}
+								onChange={(e) => setLevelView(e.target.value)}
+							>
+								<option value="1">My Views</option>
+								<option value="2">All Views</option>
+							</select>
+							</>
+						
                     </div>
+					)}
                   </div>
 
                   <div className="modal-footer">
@@ -309,7 +362,9 @@ const ViewManager = ({
               className="modal show d-block"
               tabIndex="-1"
               role="dialog"
-              style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+              style={{ 
+				backgroundColor: "rgba(0, 0, 0, 0.5)",
+			  }}
             >
               <div className="modal-dialog" role="document">
                 <div className="modal-content">
@@ -331,18 +386,20 @@ const ViewManager = ({
                       value={newViewName} // ++++++++++++++++ แสดงชื่อใหม่
                       onChange={(e) => setNewViewName(e.target.value)} // ++++++++++++++++ เก็บชื่อใหม่เมื่อผู้ใช้พิมพ์
                     />
-                    <div className="option-view pt-4">
-                      {/* Dropdown เลือกประเภท View ************ */}
-                      <p>Select a view category :</p>
-                      <select
-                        className="form-select"
-                        value={newLevelView}
-                        onChange={(e) => setNewLevelView(e.target.value)}
-                      >
-                        <option value="1">My Views</option>
-                        <option value="2">All Views</option>
-                      </select>
-                    </div>
+					{user_level !== "1" && (
+					<div className="option-view pt-4">
+						{/* Dropdown เลือกประเภท View ************ */}
+						<p>Select a view category :</p>
+						<select
+						className="form-select"
+						value={newLevelView}
+						onChange={(e) => setNewLevelView(e.target.value)}
+						>
+						<option value="1">My Views</option>
+						<option value="2">All Views</option>
+						</select>
+					</div>
+					)}
                   </div>
                   <div className="modal-footer">
                     <button

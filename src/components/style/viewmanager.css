@@ -46,3 +46,53 @@
 .view-manager.d-block {
     transform: translateX(0); /* แสดง Sidebar เมื่อเปิด */
 }
+
+
+
+/* กำหนดความสูงและการ scroll สำหรับส่วนของ views */
+.views-section {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+  }
+  
+  /* Custom styling สำหรับ scrollbar */
+  .views-section::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  /* สีพื้นหลังของ track scrollbar */
+  .views-section::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+  
+  /* สีและรูปแบบของตัว scrollbar */
+  .views-section::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+  
+  /* เมื่อ hover ที่ scrollbar */
+  .views-section::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+
+
+  /* test */
+  .views-section {
+    max-height: 100hv; /* หรือความสูงที่ต้องการ */
+    overflow-y: auto;
+    position: relative;
+  }
+  
+  /* .dropdown {
+    position: relative;
+  }
+  
+  .dropdown-menu {
+    position: absolute !important;
+    z-index: 1059;
+    right: 0;
+  } */

@@ -69,7 +69,14 @@ const Table7 = ({
   const [columnFilters, setColumnFilters] = useState([]);
   const [sorting, setSorting] = useState([]);
   const [grouping, setGrouping] = useState([]);
+  const [isEditingEnabled, setIsEditingEnabled] = useState(false);  // เพิ่ม useState สำหรับเก็บค่า enableEditing
+  const user_level = localStorage.getItem('level');  // ถ้า user_level = 1 จะ set เป็น false ไม่แสดงคอลัมน์ Action
 
+  // useEffect เพื่อตรวจสอบ user_level เมื่อ component โหลด ++++++++++++++++++++++++++++++++
+  useEffect(() => {
+      const userLevelNum = parseInt(user_level, 10);  // แปลงเป็น number ด้วย parseInt() หรือ Number()
+      setIsEditingEnabled(userLevelNum !== 1);
+  }, []);
   
   //reponsive
   const isMobile = useMediaQuery("(max-width: 1000px)");
@@ -133,7 +140,7 @@ const Table7 = ({
   const table = useMaterialReactTable({
     columns,
     data: filteredData, // Using filteredData in the table  ข้อมูลที่แสดงในตาราง
-    enableEditing: true, // Enable editing  เปิดใช้การแก้ไขข้อมูล ******************************* คอลัมน์ Action
+    enableEditing: isEditingEnabled, // Enable editing  เปิดใช้การแก้ไขข้อมูล ****** คอลัมน์ Action แสดงเมื่อ user_level ไม่ใช่ 1
     enableColumnOrdering: true, // สามารถจัดเรียง column ได้
     enableBottomToolbar: true, // เปิดใช้งาน toolbar ด้านล่าง
     positionBottomToolbar: "sticky", // ตำแหน่งของ toolbar ด้านล่าง
@@ -253,17 +260,19 @@ const Table7 = ({
           flexWrap: "wrap",
         }}
       >
-        <Tooltip title="Create">
-          <Button
-            sx={{ background: '#118DCE' }}
-            variant="contained"
-            onClick={() => {
-              table.setCreatingRow(true);
-            }}
-          >
-            <Add />
-          </Button>
-        </Tooltip>
+        {user_level !== '1' && ( // ถ้า user_level ไม่ใช่ 1 แสดงปุ่ม ADD 
+          <Tooltip title="Create">
+            <Button
+              sx={{ background: '#118DCE' }}
+              variant="contained"
+              onClick={() => {
+                table.setCreatingRow(true);
+              }}
+            >
+              <Add />
+            </Button>
+          </Tooltip>
+        )}
         {/* CSV Dropdown */}
         <Button
           aria-controls="export-csv-menu"
@@ -433,7 +442,7 @@ const Table7 = ({
     setGroupName("");
   };
 
-  // ฟังก์ชันบันทึก ID ของแถวที่ผ่านการกรองและรวมเข้าในกลุ่มใหม่
+  // ฟังก์ช��นบันทึก ID ของแถวที่ผ่านการกรองและรวมเข้าในกลุ่มใหม่
   const handleSaveFilteredIds = () => {
     const filteredIds = table.getRowModel().rows.map((row) => row.original.id);
     setGroupedIds((prevGroups) => ({
@@ -524,7 +533,15 @@ const Table7 = ({
   //!----------------------------------------------------------------------------------------------------------------------------------------------------
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Stack direction={isMobile ? "column-reverse" : "row"} gap="8px">
+      <Stack 
+        direction={isMobile ? "column-reverse" : "row"} 
+        gap="8px"
+        sx={{
+          flex: 1,
+          width: '100%',
+          height: '100%',
+        }}
+      >
         <ViewManager
           views={views}
           isViewDialogOpen={isViewDialogOpen}
@@ -542,7 +559,28 @@ const Table7 = ({
           handleEditView={handleEditView}
         />
         {/* Table หลัก -----------------------------------------------------------------*/}
-        <MaterialReactTable table={table} />
+        <Box sx={{ 
+          flexGrow: 1,
+          minWidth: 0, // ป้องกันการขยายเกินขอบเขต
+          height: '100%'
+        }}>
+          <MaterialReactTable 
+            table={table}
+            muiTablePaperProps={{
+              sx: {
+                flexGrow: 1,
+                width: '100%',
+                height: '100%',
+              }
+            }}
+            muiTableContainerProps={{
+              sx: {
+                maxHeight: 'calc(100vh - 350px)',
+                minHeight: '400px',
+              }
+            }}
+          />
+        </Box>
         {/* Filter ด้านขวา ---------------------------------------------------------------*/}
         {showSidebarRight && (
           <Paper>
@@ -598,6 +636,7 @@ const Table7 = ({
                     Please enter a name for this group:
                   </DialogContentText>
                   <TextField
+                    required
                     autoFocus
                     margin="dense"
                     label="Group Name"
