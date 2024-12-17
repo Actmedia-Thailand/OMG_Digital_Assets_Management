@@ -144,7 +144,7 @@ const Table7 = ({
     enableColumnOrdering: true, // สามารถจัดเรียง column ได้
     enableBottomToolbar: true, // เปิดใช้งาน toolbar ด้านล่าง
     positionBottomToolbar: "sticky", // ตำแหน่งของ toolbar ด้านล่าง
-    enableColumnActions: false,
+    // enableColumnActions: false,
     
     
 
@@ -260,19 +260,7 @@ const Table7 = ({
           flexWrap: "wrap",
         }}
       >
-        {user_level !== '1' && ( // ถ้า user_level ไม่ใช่ 1 แสดงปุ่ม ADD 
-          <Tooltip title="Create">
-            <Button
-              sx={{ background: '#118DCE' }}
-              variant="contained"
-              onClick={() => {
-                table.setCreatingRow(true);
-              }}
-            >
-              <Add />
-            </Button>
-          </Tooltip>
-        )}
+   
         {/* CSV Dropdown */}
         <Button
           aria-controls="export-csv-menu"

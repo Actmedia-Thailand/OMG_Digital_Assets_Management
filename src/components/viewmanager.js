@@ -109,7 +109,7 @@ const ViewManager = ({
   return (
     <>
       {showSidebarLeft && (
-        <div className="container" style={{ maxWidth: "282px" }}>
+        <div className="container container-left-sidebar" style={{ maxWidth: "282px" }}>
           {/* <p>{viewCategory}</p> */}
           <div className="card mb-3">
             <div className="card-body">
@@ -317,7 +317,7 @@ const ViewManager = ({
                     <div className="option-view pt-4">
                       {/* Dropdown เลือกประเภท View ************ */}
 						{/* Only show the dropdown if user_level is not 1 */}
-						
+				  
 							<>
 							<p>Select a view category :</p>
 							<select
