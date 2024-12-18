@@ -147,7 +147,11 @@ const Table7 = ({
     // enableColumnActions: false,
     
     
-
+    muiTopToolbarProps: {
+      sx: {
+        backgroundColor: '#e3f2fd', // สีฟ้าอ่อน
+      },
+    },
     //-------------------------------------------Action-----------------------------------------
     renderRowActions: ({ row, table }) => (
       <Box style={{ display: "flex" }}>
@@ -258,8 +262,23 @@ const Table7 = ({
           gap: "16px",
           padding: "8px",
           flexWrap: "wrap",
+          
         }}
       >
+
+        {user_level !== '1' && ( // ถ้า user_level ไม่ใช่ 1 แสดงปุ่ม ADD 
+          <Tooltip title="Create">
+            <Button
+              sx={{ background: '#118DCE' }}
+              variant="contained"
+              onClick={() => {
+                table.setCreatingRow(true);
+              }}
+            >
+              <Add />
+            </Button>
+          </Tooltip>
+        )}
    
         {/* CSV Dropdown */}
         <Button
@@ -421,6 +440,15 @@ const Table7 = ({
         </Menu>
       </Box>
     ),
+
+    // ปรับแต่งสไตล์ของ header
+    muiTableHeadCellProps: {
+          sx: {
+            backgroundColor: '#f5f5f5', // พื้นหลังส่วนหัว
+            borderBottom: '2px solid #e0e0e0', // เส้นใต้ส่วนหัว
+            fontWeight: 'bold',
+          },
+    },
   });
 
   //?ฟังชั่นเพิ่ม merge filter-------------------------------------------------------------------

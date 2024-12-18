@@ -109,7 +109,10 @@ const ViewManager = ({
   return (
     <>
       {showSidebarLeft && (
-        <div className="container container-left-sidebar" style={{ maxWidth: "282px" }}>
+        <div
+          className="container container-left-sidebar"
+          style={{ maxWidth: "282px" }}
+        >
           {/* <p>{viewCategory}</p> */}
           <div className="card mb-3">
             <div className="card-body">
@@ -117,7 +120,7 @@ const ViewManager = ({
               <div className="input-group mb-3">
                 <span className="input-group-text bg-white border-end-0">
                   {/*  ไอคอน Search */}
-                  <i className="bi bi-search text-muted"></i>
+                  <i className="bi bi-search" style={{ color: "#118DCE" }}></i>
                 </span>
                 <input
                   type="text"
@@ -135,77 +138,84 @@ const ViewManager = ({
                 <i
                   className="bi bi-plus-square me-2 icon-hover"
                   onClick={() => setIsViewDialogOpen(true)}
+                  style={{ color: "#118DCE" }}
                 ></i>
               </div>
               <hr />
               {/*  Filter My View */}
-			  <div className="views-section">
-              {filteredViews
-                .filter(
-                  (view) => view.levelView === 1 && view.id_user === user_id
-                ) // กรองข้อมูลตาม levelView และ id_user
-                .map((view, index) => (
-                  <div
-                    key={`myview-${index}`} // เปลี่ยน key ให้เป็นเอกลักษณ์
-                    className="d-flex align-items-center justify-content-between py-2 px-2 mb-1 hover-list-view-bg"
-                  >
-                    <i className="bi bi-table me-2"></i>
-                    <button
-                      className="btn btn-link text-start text-dark p-0 pe-1 text-decoration-none view-menu-text"
-                      onClick={() => handleButtonClick(view)}
-                    >
-                      {view.name}
-                    </button>
-
-                    {/* Dropdown Menu */}
+              <div className="views-section">
+                {filteredViews
+                  .filter(
+                    (view) => view.levelView === 1 && view.id_user === user_id
+                  ) // กรองข้อมูลตาม levelView และ id_user
+                  .map((view, index) => (
                     <div
-                      className="dropdown"
-                      ref={(el) =>
-                        (dropdownRefs.current[`myview-${index}`] = el)
-                      } // เปลี่ยน ref key
+                      key={`myview-${index}`} // เปลี่ยน key ให้เป็นเอกลักษณ์
+                      className="d-flex align-items-center justify-content-between py-2 px-2 mb-1 hover-list-view-bg view-item"
                     >
+                      <i
+                        className="bi bi-table me-2"
+                        style={{ color: "#118DCE" }}
+                      ></i>
                       <button
-                        className="btn btn-light btn-sm"
-                        onClick={() => toggleDropdown(`myview-${index}`)} // เปลี่ยน toggle key
+                        className="btn btn-link text-start text-dark p-0 pe-1 text-decoration-none view-menu-text view-text"
+                        onClick={() => handleButtonClick(view)}
                       >
-                        <i className="bi bi-three-dots-vertical"></i>
+                        {view.name}
                       </button>
 
-                      {isDropdownOpen === `myview-${index}` && (
-                        <ul
-                          className="dropdown-menu show mt-1 shadow-sm"
-                          style={{ 
-							display: "block",
-							position: "absolute",
-							right: 0,
-							zIndex: 1000,
-							padding: "0.25rem 0", // ลด padding ด้านบนและล่าง
-							minWidth: "120px",    // กำหนดความกว้างขั้นต่ำให้แคบลง
-							fontSize: "0.875rem"  // ลดขนาดตัวอักษร
-						  }}
+                      {/* Dropdown Menu */}
+                      <div
+                        className="dropdown"
+                        ref={(el) =>
+                          (dropdownRefs.current[`myview-${index}`] = el)
+                        } // เปลี่ยน ref key
+                      >
+                        <button
+                          className="btn btn-light btn-sm three-dots-button"
+                          onClick={() => toggleDropdown(`myview-${index}`)} // เปลี่ยน toggle key
                         >
-                          <li>
-                            <button
-                              className="dropdown-item"
-                              onClick={() => handleRename(view)}
-                            >
-                              Rename
-                            </button>
-                          </li>
-                          <li>
-                            <button
-                              className="dropdown-item text-danger"
-                              onClick={() => handleDelete(view)}
-                            >
-                              Delete
-                            </button>
-                          </li>
-                        </ul>
-                      )}
+                          <i
+                            className="bi bi-three-dots-vertical"
+                            style={{ color: "#118DCE" }}
+                          ></i>
+                        </button>
+
+                        {isDropdownOpen === `myview-${index}` && (
+                          <ul
+                            className="dropdown-menu show mt-1 shadow-sm"
+                            style={{
+                              display: "block",
+                              position: "absolute",
+                              right: 0,
+                              zIndex: 1000,
+                              padding: "0.25rem 0", // ลด padding ด้านบนและล่าง
+                              minWidth: "120px", // กำหนดความกว้างขั้นต่ำให้แคบลง
+                              fontSize: "0.875rem", // ลดขนาดตัวอักษร
+                            }}
+                          >
+                            <li>
+                              <button
+                                className="dropdown-item"
+                                onClick={() => handleRename(view)}
+                              >
+                                Rename
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                className="dropdown-item text-danger"
+                                onClick={() => handleDelete(view)}
+                              >
+                                Delete
+                              </button>
+                            </li>
+                          </ul>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
-				</div>
+                  ))}
+              </div>
 
               {/* All Views  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/}
               <div className="d-flex justify-content-between pt-3">
@@ -213,74 +223,80 @@ const ViewManager = ({
               </div>
               <hr />
               {/* Filter All View */}
-			  <div className="views-section">
-              {filteredViews
-                .filter((view) => view.levelView === 2) // กรองข้อมูลตาม levelView
-                .map((view, index) => (
-                  <div
-                    key={`allview-${index}`} // เปลี่ยน key ให้เป็นเอกลักษณ์
-                    className="d-flex align-items-center justify-content-between py-2 px-2 mb-1 hover-list-view-bg"
-                  >
-                    <i className="bi bi-table me-2"></i>
-                    <button
-                      className="btn btn-link text-start text-dark p-0 text-decoration-none view-menu-text"
-                      onClick={() => handleButtonClick(view)}
-                    >
-                      {view.name}
-                    </button>
-
-                    {/* Dropdown Menu */}
+              <div className="views-section">
+                {filteredViews
+                  .filter((view) => view.levelView === 2) // กรองข้อมูลตาม levelView
+                  .map((view, index) => (
                     <div
-                      className="dropdown"
-                      ref={(el) =>
-                        (dropdownRefs.current[`allview-${index}`] = el)
-                      } // เปลี่ยน ref key
+                      key={`allview-${index}`} // เปลี่ยน key ให้เป็นเอกลักษณ์
+                      className="d-flex align-items-center justify-content-between py-2 px-2 mb-1 hover-list-view-bg view-item"
                     >
-                      {/* เปลี่ยน toggle key แสดงปุ่มเฉพาะเมื่อ user_level ไม่ใช่ 1 */}
-                      {user_level !== "1" && (
-                        <button
-                          className="btn btn-light btn-sm"
-                          onClick={() => toggleDropdown(`allview-${index}`)}
-                        >
-                          <i className="bi bi-three-dots-vertical"></i>
-                        </button>
-                      )}
+                      <i
+                        className="bi bi-table me-2"
+                        style={{ color: "#118DCE" }}
+                      ></i>
+                      <button
+                        className="btn btn-link text-start text-dark p-0 text-decoration-none view-menu-text  view-text"
+                        onClick={() => handleButtonClick(view)}
+                      >
+                        {view.name}
+                      </button>
 
-                      {isDropdownOpen === `allview-${index}` && (
-                        <ul
-                          className="dropdown-menu show mt-1 shadow-sm"
-                          style={{ 
-							display: "block",
-							position: "absolute",
-							right: 0,
-							zIndex: 1000,
-							padding: "0.25rem 0", // ลด padding ด้านบนและล่าง
-							minWidth: "120px",    // กำหนดความกว้างขั้นต่ำให้แคบลง
-							fontSize: "0.875rem"  // ลดขนาดตัวอักษร
-						  }}
-                        >
-                          <li>
-                            <button
-                              className="dropdown-item"
-                              onClick={() => handleRename(view)}
-                            >
-                              Rename
-                            </button>
-                          </li>
-                          <li>
-                            <button
-                              className="dropdown-item text-danger"
-                              onClick={() => handleDelete(view)}
-                            >
-                              Delete
-                            </button>
-                          </li>
-                        </ul>
-                      )}
+                      {/* Dropdown Menu */}
+                      <div
+                        className="dropdown"
+                        ref={(el) =>
+                          (dropdownRefs.current[`allview-${index}`] = el)
+                        } // เปลี่ยน ref key
+                      >
+                        {/* เปลี่ยน toggle key แสดงปุ่มเฉพาะเมื่อ user_level ไม่ใช่ 1 */}
+                        {user_level !== "1" && (
+                          <button
+                            className="btn btn-light btn-sm three-dots-button"
+                            onClick={() => toggleDropdown(`allview-${index}`)}
+                          >
+                            <i
+                              className="bi bi-three-dots-vertical"
+                              style={{ color: "#118DCE" }}
+                            ></i>
+                          </button>
+                        )}
+
+                        {isDropdownOpen === `allview-${index}` && (
+                          <ul
+                            className="dropdown-menu show mt-1 shadow-sm"
+                            style={{
+                              display: "block",
+                              position: "absolute",
+                              right: 0,
+                              zIndex: 1000,
+                              padding: "0.25rem 0", // ลด padding ด้านบนและล่าง
+                              minWidth: "120px", // กำหนดความกว้างขั้นต่ำให้แคบลง
+                              fontSize: "0.875rem", // ลดขนาดตัวอักษร
+                            }}
+                          >
+                            <li>
+                              <button
+                                className="dropdown-item"
+                                onClick={() => handleRename(view)}
+                              >
+                                Rename
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                className="dropdown-item text-danger"
+                                onClick={() => handleDelete(view)}
+                              >
+                                Delete
+                              </button>
+                            </li>
+                          </ul>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
-				</div>
+                  ))}
+              </div>
             </div>
           </div>
 
@@ -313,25 +329,24 @@ const ViewManager = ({
                       onChange={(e) => setViewName(e.target.value)}
                     />
 
-					{user_level !== "1" && (
-                    <div className="option-view pt-4">
-                      {/* Dropdown เลือกประเภท View ************ */}
-						{/* Only show the dropdown if user_level is not 1 */}
-				  
-							<>
-							<p>Select a view category :</p>
-							<select
-								className="form-select"
-								value={levelView}
-								onChange={(e) => setLevelView(e.target.value)}
-							>
-								<option value="1">My Views</option>
-								<option value="2">All Views</option>
-							</select>
-							</>
-						
-                    </div>
-					)}
+                    {user_level !== "1" && (
+                      <div className="option-view pt-4">
+                        {/* Dropdown เลือกประเภท View ************ */}
+                        {/* Only show the dropdown if user_level is not 1 */}
+
+                        <>
+                          <p>Select a view category :</p>
+                          <select
+                            className="form-select"
+                            value={levelView}
+                            onChange={(e) => setLevelView(e.target.value)}
+                          >
+                            <option value="1">My Views</option>
+                            <option value="2">All Views</option>
+                          </select>
+                        </>
+                      </div>
+                    )}
                   </div>
 
                   <div className="modal-footer">
@@ -362,9 +377,9 @@ const ViewManager = ({
               className="modal show d-block"
               tabIndex="-1"
               role="dialog"
-              style={{ 
-				backgroundColor: "rgba(0, 0, 0, 0.5)",
-			  }}
+              style={{
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              }}
             >
               <div className="modal-dialog" role="document">
                 <div className="modal-content">
@@ -386,20 +401,20 @@ const ViewManager = ({
                       value={newViewName} // ++++++++++++++++ แสดงชื่อใหม่
                       onChange={(e) => setNewViewName(e.target.value)} // ++++++++++++++++ เก็บชื่อใหม่เมื่อผู้ใช้พิมพ์
                     />
-					{user_level !== "1" && (
-					<div className="option-view pt-4">
-						{/* Dropdown เลือกประเภท View ************ */}
-						<p>Select a view category :</p>
-						<select
-						className="form-select"
-						value={newLevelView}
-						onChange={(e) => setNewLevelView(e.target.value)}
-						>
-						<option value="1">My Views</option>
-						<option value="2">All Views</option>
-						</select>
-					</div>
-					)}
+                    {user_level !== "1" && (
+                      <div className="option-view pt-4">
+                        {/* Dropdown เลือกประเภท View ************ */}
+                        <p>Select a view category :</p>
+                        <select
+                          className="form-select"
+                          value={newLevelView}
+                          onChange={(e) => setNewLevelView(e.target.value)}
+                        >
+                          <option value="1">My Views</option>
+                          <option value="2">All Views</option>
+                        </select>
+                      </div>
+                    )}
                   </div>
                   <div className="modal-footer">
                     <button
