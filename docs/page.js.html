@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>page.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="styles/prettify-tomorrow.css"
+    />
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css" />
+  </head>
+  <body>
+    <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+    <label for="nav-trigger" class="navicon-button x">
+      <div class="navicon"></div>
+    </label>
+
+    <label for="nav-trigger" class="overlay"></label>
+
+    <nav>
+      <li class="nav-link nav-home-link"><a href="index.html">Home</a></li>
+      <li class="nav-heading"><a href="global.html">Globals</a></li>
+      <li class="nav-item">
+        <span class="nav-item-type type-function">F</span
+        ><span class="nav-item-name"><a href="global.html#Login">Login</a></span>
+      </li>
+      <!-- <li><a href="usage.html">Getting Started</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="support.html">Support</a></li> -->
+    </nav>
+
+    <div id="main">
+      <h1 class="page-title">page.js</h1>
+
+      <section>
+        <article>
+          <pre class="prettyprint source linenums">
+          <code>
+          "use client";  // บอกให้ Next.js รู้ว่านี่เป็น Client-Side Component
+          import Loader2 from "@/components/loader2";
+
+          import { useState, useEffect } from "react";
+          import "bootstrap/dist/css/bootstrap.min.css";
+          import "./globals.css";
+          import styles from "./page.module.css";
+          import Link from "next/link";
+          import Image from "next/image";
+          import { useRouter } from "next/navigation"; // ใช้ next/navigation สำหรับ App Router
+          import axios from "axios"; // ใช้เรียก api
+          import Swal from "sweetalert2"; // Import SweetAlert2
+          import { Suspense } from "react";
+
+          /**
+          * Component for handling user login.
+          * @component
+          */
+          const Login = () => {
+            const [username, setUsername] = useState(""); // เก็บค่า username
+            const [password, setPassword] = useState(""); // เก็บค่า password
+            const [showPassword, setShowPassword] = useState(false); // สถานะการแสดงรหัสผ่าน
+            const router = useRouter(); //redirect page
+            const [isLoading, setIsLoading] = useState(true); //Loading
+
+            /**
+            * Handles the login process when the form is submitted.
+            * @param {Object} e - The event object from the form submission.
+            * @returns {void}
+            */
+            const handleLogin = async (e) => {
+              e.preventDefault();
+
+              if (!username || !password) {
+                Swal.fire({
+                  icon: "warning",
+                  title: "Required all field",
+                  text: "Please fill in both Username and Password .",
+                  confirmButtonText: "OK",
+                });
+                return;
+              }
+
+              setIsLoading(true);  // เปิด Loading
+              try {
+                const data = {
+                  username: username,
+                  password: password,
+                };
+
+                const response = await axios.post(
+                  "http://127.0.0.1:8000/users/login",
+                  data,
+                  {
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+
+                if (response.data) {
+                  // เก็บข้อมูลใน localStorage
+                  localStorage.setItem("user_id", response.data.user.id);
+                  localStorage.setItem("access_token", response.data.access_token);
+                  localStorage.setItem("username", response.data.user.username);
+                  localStorage.setItem("name", response.data.user.name);
+                  localStorage.setItem("department", response.data.user.department);
+                  localStorage.setItem("position", response.data.user.position);
+                  localStorage.setItem("level", response.data.user.level);
+                  
+                  // redirect ไปหน้า assets โดยไม่ต้องปิด loading
+                  router.push("/assets");
+                }
+              } catch (error) {
+                Swal.fire({
+                  icon: "warning",
+                  title: "Login failed &lt;br> please try again",
+                  confirmButtonText: "OK",
+                });
+                setIsLoading(false); // ปิด loading เมื่อเกิด error
+              }
+            };
+
+            /**
+            * Redirects the user to the Google OAuth API for login.
+            * @returns {void}
+            */
+            const handleGoogleLogin = () => {
+              // เพิ่มการเชื่อมต่อกับ Google OAuth API
+              window.location.href =
+                "https://accounts.google.com/o/oauth2/v2/auth?client_id=58925176098-4s7j4uqgh9h77e1n74af32kt1spfml89.apps.googleusercontent.com&amp;redirect_uri=http://localhost:8000/users/google_signup&amp;response_type=code&amp;scope=email%20profile%20openid&amp;state=12345&amp;prompt=consent";
+            };
+
+            useEffect(() => {
+              // ตรวจสอบ token ที่มีอยู่
+              const token = localStorage.getItem("access_token");
+              const username = localStorage.getItem("username");
+              
+              if (token &amp;&amp; username) {
+                // ถ้ามี token และ username ให้ redirect ไปหน้า assets ทันที
+                router.push("/assets");
+              } else {
+                // ถ้าไม่มี token ให้ปิด loading
+                setIsLoading(false);
+              }
+            }, [router]); // เพิ่ม router เป็น dependency
+
+            if (isLoading) {
+              return &lt;Loader2 />;
+            }
+
+            return (
+              &lt;Suspense fallback={&lt;Loader2 />}>
+                &lt;div
+                  className={`${styles.loginContainer} container-fluid d-flex align-items-center justify-content-center`}
+                >
+                  &lt;div className={`${styles.loginBox} row`}>
+                    {/* Left side (Login form) */}
+                    &lt;div
+                      className={`col-lg-6 col-md-12 bg-white ${styles.paddingHightLogin}`}
+                    >
+                      &lt;h2 className="fw-bold text-center">Login&lt;/h2>
+                      &lt;h5 className="pb-4 text-center" style={{ fontSize: "20px" }}>
+                        OMG Digital Assets Management
+                      &lt;/h5>
+                      &lt;form onSubmit={handleLogin}>
+                        &lt;div className="mb-4">
+                          &lt;label className="form-label">Username&lt;/label>
+                          &lt;input
+                            type="text"
+                            className="form-control rounded-pill"
+                            placeholder="username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)} // อัปเดตค่า username
+                          />
+                        &lt;/div>
+
+                        &lt;div className="mb-4">
+                          &lt;label className="form-label">Password&lt;/label>
+                          &lt;div className="position-relative">
+                            &lt;input
+                              type={showPassword ? "text" : "password"} // เปลี่ยนเป็น text ถ้า showPassword เป็น true
+                              className="form-control rounded-pill"
+                              placeholder="password"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                              style={{ paddingRight: "30px" }} // เพิ่ม padding ด้านขวาเพื่อหลีกเลี่ยงการทับกัน
+                            />
+                            &lt;span
+                              className="position-absolute"
+                              style={{
+                                top: "50%",
+                                right: "10px",
+                                transform: "translateY(-50%)",
+                                cursor: "pointer",
+                              }}
+                              onClick={() => setShowPassword(!showPassword)} // สลับสถานะการแสดงรหัสผ่าน
+                            >
+                              {/* ใช้ Bootstrap Icons */}
+                              {showPassword ? (
+                                &lt;i className="bi bi-eye">&lt;/i>
+                              ) : (
+                                &lt;i className="bi bi-eye-slash">&lt;/i>
+                              )}
+                            &lt;/span>
+                          &lt;/div>
+                        &lt;/div>
+
+                        &lt;button
+                          type="submit"
+                          className={`btn  w-100 rounded-pill   ${
+                            (styles.loginButton, styles.loginBtn)
+                          }`}
+                        >
+                          Login
+                        &lt;/button>
+
+                        {/* Divider */}
+                        &lt;div className="d-flex align-items-center my-3">
+                          &lt;hr className="flex-grow-1" />
+                          &lt;span className="px-2 text-muted">or&lt;/span>
+                          &lt;hr className="flex-grow-1" />
+                        &lt;/div>
+
+                        {/* Google Login Button */}
+                        &lt;button
+                          type="button"
+                          className="btn btn-light w-100 rounded-pill d-flex align-items-center justify-content-center"
+                          style={{
+                            border: "1px solid #ddd",
+                            color: "rgb(50 50 50)",
+                            fontWeight: "bold",
+                            hover: "#fff",
+                          }}
+                          onClick={handleGoogleLogin}
+                        >
+                          &lt;img
+                            src="/google.svg"
+                            alt="Google Logo"
+                            width="20"
+                            height="20"
+                            className="me-2"
+                          />
+                          Sign in with Google
+                        &lt;/button>
+                      &lt;/form>
+                    &lt;/div>
+
+                    {/* Right side (Welcome message) */}
+                    &lt;div
+                      className={`${styles.welcomeBox} col-lg-6 col-md-12 d-flex flex-column align-items-center justify-content-center`}
+                    >
+                      &lt;div className={`mb-4 ${styles.logo}`}>
+                        &lt;Image
+                          src="/logo-actmedia-header.png"
+                          alt="Logo Actmedia Thailand"
+                          className="img-fluid p-2"
+                          width={500}
+                          height={300}
+                          layout="responsive" // ใช้ layout แบบ responsive
+                          priority // ใช้ priority เพื่อ preload ภาพ
+                        />
+                      &lt;/div>
+                      &lt;h5>Welcome to&lt;/h5>
+                      &lt;h4>Digital Assets Management&lt;/h4>
+                      &lt;p>Don’t have an account?&lt;/p>
+                      &lt;Link
+                        href="/register"
+                        className={`${styles.registerButton}  btn btn-outline-light rounded-pill`}
+                        style={{ width: "30%" }}
+                      >
+                        Register
+                      &lt;/Link>
+                    &lt;/div>
+                  &lt;/div>
+                &lt;/div>
+              &lt;/Suspense>
+            );
+          };
+
+          export default Login;
+        </code>
+        </pre>
+        </article>
+      </section>
+    </div>
+
+    <br class="clear" />
+
+    <footer>
+      Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on
+      Tue Jan 07 2025 14:56:20 GMT+0700 (Indochina Time) using the Minami theme.
+    </footer>
+
+    <script>
+      prettyPrint();
+    </script>
+    <script src="scripts/linenumber.js"></script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-"use client"; // บอกให้ Next.js รู้ว่านี่เป็น Client-Side Component
+"use client";  // บอกให้ Next.js รู้ว่านี่เป็น Client-Side Component
 import Loader2 from "@/components/loader2";
 
 import { useState, useEffect } from "react";
@@ -12,6 +12,10 @@ import axios from "axios"; // ใช้เรียก api
 import Swal from "sweetalert2"; // Import SweetAlert2
 import { Suspense } from "react";
 
+/**
+ * Component for handling user login.
+ * @component
+ */
 const Login = () => {
   const [username, setUsername] = useState(""); // เก็บค่า username
   const [password, setPassword] = useState(""); // เก็บค่า password
@@ -19,7 +23,11 @@ const Login = () => {
   const router = useRouter(); //redirect page
   const [isLoading, setIsLoading] = useState(true); //Loading
 
-  // ฟังก์ชันจัดการเมื่อ click submit form  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  /**
+   * Handles the login process when the form is submitted.
+   * @param {Object} e - The event object from the form submission.
+   * @returns {void}
+   */
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -73,6 +81,10 @@ const Login = () => {
     }
   };
 
+  /**
+   * Redirects the user to the Google OAuth API for login.
+   * @returns {void}
+   */
   const handleGoogleLogin = () => {
     // เพิ่มการเชื่อมต่อกับ Google OAuth API
     window.location.href =
