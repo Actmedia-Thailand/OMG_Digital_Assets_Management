@@ -1,4 +1,45 @@
-"use client";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>app/register/page.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#Login">Login</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#Permission">Permission</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#Profile">Profile</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ProtectedRoute">ProtectedRoute</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#Register">Register</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ViewManager">ViewManager</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">app/register/page.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use client";
 
 // pages/register.js
 import React from 'react';
@@ -12,6 +53,10 @@ import axios from "axios";  // ใช้เรียก api
 import Swal from 'sweetalert2'; // Import SweetAlert2
 import Loader2 from '@/components/loader2';
 
+/**
+ * Register component for managing user profile information.
+ * @returns {JSX.Element} The rendered component.
+ */
 const Register = () => {
 
     // ใช้ useState เก็บข้อมูลจากฟอร์ม ++++++++++++++++++++++++++++
@@ -24,7 +69,6 @@ const Register = () => {
     const [level, setLevel] = useState('1');
     const [errorRegisterForm, setErrorRegisterForm] = useState("");  // เตือน Error Profile Form 
     const [loading, setLoading] = useState(true); // สถานะสำหรับ Loading
-
 
     // Department array data +++++++++++++++++++++++++++++++++++
     const departmentArr = [
@@ -39,22 +83,31 @@ const Register = () => {
     // console.log(selectedDepartment)
 
 
-    useEffect(() =>  {
+    useEffect(() => {
       setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
     }, []); // useEffect จะทำงานเมื่อหน้าโหลดครั้งแรก
 
     //ใช้ redirect page 
     const router = useRouter(); 
 
-    // ปุ่ม Register +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    const handleRegister = (e) => {
+
+    /**
+     * Handles the registration process.
+     * Validates form data, sends a registration request to the server,
+     * and handles the response.
+     * 
+     * @param {Event} e - The event object from the form submission.
+     * @returns {void} - Does not return a value.
+     */
+
+    const handleRegister = (e) => {    // ปุ่ม Register +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
       e.preventDefault();
 
       // Validate ข้อมูลก่อนเรียก API ***********************************************************
       if (!username.trim() || !password.trim() ||  !name.trim()  || !department.trim() || !position.trim()) {
           setErrorRegisterForm('All fields are required.')
           return; // หยุดการทำงานถ้าข้อมูลไม่ครบ
-      }else if (password.length < 6) {   // ตรวจสอบความยาวรหัสผ่านขั้นต่ำ 6 ตัวอักษร
+      }else if (password.length &lt; 6) {   // ตรวจสอบความยาวรหัสผ่านขั้นต่ำ 6 ตัวอักษร
         setErrorRegisterForm('Password must be at least 6 characters long.');
         return;
       }else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {  // ตรวจสอบว่ารหัสผ่านต้องประกอบด้วยตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่ และตัวเลขอย่างน้อย 1 ตัว
@@ -121,16 +174,16 @@ const Register = () => {
 
     // แสดง Loading ระหว่างโหลด +++++++++++++++++++++++++++++++++++++++
     if (loading) {
-      return <div><Loader2/></div>;
+      return &lt;div>&lt;Loader2/>&lt;/div>;
     }
 
 
     return (
-      <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light py-5">
-        <div className="card p-4" style={{ width: '400px' }}>
-          <div className="text-center mb-4">
-          <div className={`rounded-circle mx-auto d-flex align-items-center ${styles.boxLogoRegister}`} style={{ width: '130px', height: '130px'}}>
-                <Image 
+      &lt;div className="d-flex align-items-center justify-content-center min-vh-100 bg-light py-5">
+        &lt;div className="card p-4" style={{ width: '400px' }}>
+          &lt;div className="text-center mb-4">
+          &lt;div className={`rounded-circle mx-auto d-flex align-items-center ${styles.boxLogoRegister}`} style={{ width: '130px', height: '130px'}}>
+                &lt;Image 
                   src="/logo-actmedia-header.png" 
                   alt="Logo Actmedia Thailand"
                   className="img-fluid p-2" 
@@ -139,13 +192,13 @@ const Register = () => {
                   layout="responsive" // ใช้ layout แบบ responsive
                   priority // ใช้ priority เพื่อ preload ภาพ
                 />
-            </div>
-            <h3 className="mt-3">Register</h3>
-          </div>
-          <form onSubmit={handleRegister}>
-            <div className="mb-3">
-              <label htmlFor="username" className="form-label">Username</label>
-              <input 
+            &lt;/div>
+            &lt;h3 className="mt-3">Register&lt;/h3>
+          &lt;/div>
+          &lt;form onSubmit={handleRegister}>
+            &lt;div className="mb-3">
+              &lt;label htmlFor="username" className="form-label">Username&lt;/label>
+              &lt;input 
                 type="text" 
                 id="username" 
                 className="form-control rounded-pill" 
@@ -153,11 +206,11 @@ const Register = () => {
                 value={username} 
                 onChange={(e) => setUsername(e.target.value)} // อัปเดตค่าของ username
               />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label">Password</label>
-              <div className="position-relative">
-                <input 
+            &lt;/div>
+            &lt;div className="mb-3">
+              &lt;label htmlFor="password" className="form-label">Password&lt;/label>
+              &lt;div className="position-relative">
+                &lt;input 
                   type={showPassword ? 'text' : 'password'}  // เปลี่ยนเป็น text ถ้า showPassword เป็น true
                   id="password" 
                   className="form-control rounded-pill" 
@@ -166,19 +219,19 @@ const Register = () => {
                   onChange={(e) => setPassword(e.target.value)} // อัปเดตค่าของ password
                   style={{ paddingRight: '30px' }} // เพิ่ม padding ด้านขวาเพื่อหลีกเลี่ยงการทับกัน
                 />
-                <span 
+                &lt;span 
                   className="position-absolute" 
                   style={{ top: '50%', right: '10px', transform: 'translateY(-50%)', cursor: 'pointer' }}
                   onClick={() => setShowPassword(!showPassword)}  // สลับสถานะการแสดงรหัสผ่าน 
                 >
                     {/* ใช้ Bootstrap Icons */}
-                    {showPassword ? <i className="bi bi-eye"></i> : <i className="bi bi-eye-slash"></i>}
-                </span>
-              </div>
-            </div>
-            <div className="mb-3">
-              <label htmlFor="name" className="form-label">Name</label>
-              <input 
+                    {showPassword ? &lt;i className="bi bi-eye">&lt;/i> : &lt;i className="bi bi-eye-slash">&lt;/i>}
+                &lt;/span>
+              &lt;/div>
+            &lt;/div>
+            &lt;div className="mb-3">
+              &lt;label htmlFor="name" className="form-label">Name&lt;/label>
+              &lt;input 
                 type="text" 
                 id="name" 
                 className="form-control rounded-pill" 
@@ -186,12 +239,12 @@ const Register = () => {
                 value={name} 
                 onChange={(e) => setName(e.target.value)} // อัปเดตค่าของ name
               />
-            </div>
+            &lt;/div>
 
             {/* ********* Department option *********** */}
-            <div className="mb-3">
-              <label htmlFor="department" className="form-label">Department</label>
-              <select
+            &lt;div className="mb-3">
+              &lt;label htmlFor="department" className="form-label">Department&lt;/label>
+              &lt;select
                 id="department"
                 className="form-control rounded-pill department-select"
                 value={department}
@@ -200,49 +253,67 @@ const Register = () => {
                   setPosition(""); // รีเซ็ต position เมื่อเปลี่ยน department
                 }}
               >
-                <option value="">-- Select Department --</option>
+                &lt;option value="">-- Select Department --&lt;/option>
                 {departmentArr.map((dept) => (
-                  <option key={dept.name} value={dept.name}>
+                  &lt;option key={dept.name} value={dept.name}>
                     {dept.name}
-                  </option>
+                  &lt;/option>
                 ))}
-              </select>
-            </div>
+              &lt;/select>
+            &lt;/div>
 
             {/* *************** Position ******************** */}
-            <div className="mb-4">
-              <label htmlFor="position" className="form-label">Position</label>
-              <select
+            &lt;div className="mb-4">
+              &lt;label htmlFor="position" className="form-label">Position&lt;/label>
+              &lt;select
                 id="position"
                 className="form-control rounded-pill"
                 value={position}
                 onChange={(e) => setPosition(e.target.value)} // อัปเดตตำแหน่งงานที่เลือก
                 disabled={!department} // ปิดการใช้งานหากยังไม่ได้เลือก department
               >
-                <option value="">-- Select Position --</option>
-                {selectedDepartment &&
+                &lt;option value="">-- Select Position --&lt;/option>
+                {selectedDepartment &amp;&amp;
                   selectedDepartment.positions.map((pos, index) => ( // Loop จาก  Positions Array
-                    <option key={index} value={pos}>
+                    &lt;option key={index} value={pos}>
                       {pos}
-                    </option>
+                    &lt;/option>
                 ))}
-              </select>
-            </div>
+              &lt;/select>
+            &lt;/div>
 
             
 
             {/* Alert Error !! */}
-            {errorRegisterForm && (
-                <div className="alert alert-danger pb-3" role="alert">
+            {errorRegisterForm &amp;&amp; (
+                &lt;div className="alert alert-danger pb-3" role="alert">
                   {errorRegisterForm}
-                </div>
+                &lt;/div>
             )}
-            <button type="submit" className={`w-100 mb-2 ${styles.registerBtn}`}>Register now</button>
-            <Link href="/" className={`btn btn-light w-100  ${styles.backBtn}`} >Back</Link>
-          </form>
-        </div>
-      </div>
+            &lt;button type="submit" className={`w-100 mb-2 ${styles.registerBtn}`}>Register now&lt;/button>
+            &lt;Link href="/" className={`btn btn-light w-100  ${styles.backBtn}`} >Back&lt;/Link>
+          &lt;/form>
+        &lt;/div>
+      &lt;/div>
     );
 }
 
-export default Register;
+export default Register;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Thu Jan 09 2025 17:46:11 GMT+0700 (Indochina Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

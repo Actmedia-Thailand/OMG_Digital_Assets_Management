@@ -47,7 +47,7 @@ const Table7 = ({
   showSidebarLeft,
   setShowSidebarLeft,
   showSidebarRight,
-  setShowSidebarRight,
+  setShowSidebarRight
   
 }) => {
   // ++++++++++++++++ useState +++++++++++++++++++++++++++++++++++++++++++++
@@ -145,7 +145,7 @@ const Table7 = ({
     enableBottomToolbar: true, // เปิดใช้งาน toolbar ด้านล่าง
     positionBottomToolbar: "sticky", // ตำแหน่งของ toolbar ด้านล่าง
     // enableColumnActions: false,
-    
+
     
     muiTopToolbarProps: {
       sx: {

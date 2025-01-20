@@ -1,7 +1,9 @@
 {
   "source": {
-    "include": ["src/app/page.js"],
-    "includePattern": ".+\\.js(doc|x)?$",
+    "include": [
+      "src/app/permission/page.js"
+    ],
+    "includePattern": ".+\\.(js|html)$",
     "excludePattern": "(node_modules|docs)"
   },
   "opts": {

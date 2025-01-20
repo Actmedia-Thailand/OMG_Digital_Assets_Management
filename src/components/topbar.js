@@ -29,7 +29,6 @@ function Topbar({fixedTop}) {
         setIsDesktop(isDesktopNow);
     };
 
-
     const router = useRouter();   // คำสั่งสำหรับ redirect page   ++++++++++++++++++++++++++++++++
     const handleLogout = () => {
         // ลบข้อมูลทั้งหมดใน LocalStorage หลัง Click Logout
@@ -73,7 +72,6 @@ function Topbar({fixedTop}) {
             window.removeEventListener("resize", handleEvents);
         };
     }, [showAccount]); // ทำงานใหม่เมื่อ `showAccount` เปลี่ยน
-
 
 
   return (
