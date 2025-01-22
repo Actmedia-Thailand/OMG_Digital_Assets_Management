@@ -25,7 +25,6 @@ const Profile = () => {
     const [nameSecond, setNameSecond] = useState('');
     const [department, setDepartment] = useState('');
     const [position, setPosition] = useState('');
-    const [level, setLevel] = useState('1');
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -174,16 +173,13 @@ const Profile = () => {
           window.location.reload(); // reload หน้า หลังกด Save change
         }
 
-
         //เก็บข้อมูลจาก Form รวมเป็น Object
         const ProfileFormObj = { 
         username: username,
         name: name,
         department: department,
         position: position,
-        level: Number(level)
         };
-
 
         // เรียก API ด้วย axios ++++++++++++++++++++++++++++++++++++++++++++++
         const user_id = localStorage.getItem('user_id');  // Get user_id ที่เก็บใน localstorage
@@ -192,7 +188,7 @@ const Profile = () => {
               'Content-Type': 'application/json'
           }
         })
-
+        
         .then((response) => {
         console.log("Edit Profile successful:", response.data);
 

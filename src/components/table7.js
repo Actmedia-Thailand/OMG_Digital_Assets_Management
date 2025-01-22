@@ -134,6 +134,7 @@ const Table7 = ({
     deleteAsset(selectedAsset.id);
     setIsDeleteModalOpen(false);
   };
+  
   //!-----------------------------------------------------------------TABLE--------------------------------------------------------
 
   // สร้าง table instance
