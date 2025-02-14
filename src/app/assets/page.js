@@ -168,6 +168,11 @@ const Assets = () => {
     { accessorKey: "setMacAddress", header: "Set MAC Address" },
     { accessorKey: "Phone", header: "Phone" },
     { accessorKey: "DongleWifi", header: "Dongle Wi-Fi" },
+    {
+      accessorKey: "createdOn",
+      header: "Created On",
+      filterVariant: "date-range",
+    },
   ];
 
   // แสดงข้อมูลเมื่อโหลดสำเร็จ
@@ -182,18 +187,18 @@ const Assets = () => {
             setShowSidebarRight={setShowSidebarRight}
           />
           <div
-          className="flex-grow-1"
-          style={{
-            overflowX: "clip",
-            width: "100%",
-            marginTop: "135px",
-            padding: "20px",
-            position: "absolute",
-            top: 0,
-            bottom: "50px", // ให้เหลือพื้นที่สำหรับ Footer
-            overflowY: "hidden",
-          }}
-        >
+            className="flex-grow-1"
+            style={{
+              overflowX: "clip",
+              width: "100%",
+              marginTop: "135px",
+              padding: "20px",
+              position: "absolute",
+              top: 0,
+              bottom: "50px", // ให้เหลือพื้นที่สำหรับ Footer
+              overflowY: "hidden",
+            }}
+          >
             <Table7
               data={data}
               columns={columns}
@@ -205,16 +210,16 @@ const Assets = () => {
               setShowSidebarRight={setShowSidebarRight}
             />
           </div>
-          <div 
-          style={{
-            position: "absolute", 
-            bottom: 0, 
-            width: "100%", 
-            height: "50px" // ความสูงของ Footer
-          }}
-        >
-          <Footer />
-        </div>
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              width: "100%",
+              height: "50px", // ความสูงของ Footer
+            }}
+          >
+            <Footer />
+          </div>
         </div>
       </ProtectedRoute>
     </>
