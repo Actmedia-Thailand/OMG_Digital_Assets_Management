@@ -1,4 +1,4 @@
-"use client";  // บอกให้ Next.js รู้ว่านี่เป็น Client-Side Component
+"use client"; // บอกให้ Next.js รู้ว่านี่เป็น Client-Side Component
 import Loader2 from "@/components/loader2";
 
 import { useState, useEffect } from "react";
@@ -11,7 +11,6 @@ import { useRouter } from "next/navigation"; // ใช้ next/navigation สำ
 import axios from "axios"; // ใช้เรียก api
 import Swal from "sweetalert2"; // Import SweetAlert2
 import { Suspense } from "react";
-
 
 const Login = () => {
   const [username, setUsername] = useState(""); // เก็บค่า username
@@ -26,61 +25,53 @@ const Login = () => {
     if (!username || !password) {
       Swal.fire({
         icon: "warning",
-        title: "Required all field",
-        text: "Please fill in both Username and Password .",
-        confirmButtonText: "OK", // Confirmation button
+        title: "Required all fields",
+        text: "Please fill in both Username and Password.",
+        confirmButtonText: "OK",
       });
-      return;
+      return; // Exit function if fields are empty
     }
 
-    setIsLoading(true);  // เปิด Loading
+    setIsLoading(true); // Show Loading
+
     try {
       const data = {
         username: username,
         password: password,
       };
 
-      setIsLoading(true); // เปิด Loading
-      try {
-        // ส่ง Request API Login ด้วย Axios  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/users/login`,
-          data,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (response.data) {
-          console.log("Logined successfully:", response.data); //แสดงเมื่อ request api สำเร็จ
-          localStorage.setItem("user_id", response.data.user.id); //เก็บ access_token ใน localstorage
-          localStorage.setItem("access_token", response.data.access_token); //เก็บ access_token ใน localstorage
-          localStorage.setItem("username", response.data.user.username); //เก็บ username ใน localstorage
-          localStorage.setItem("name", response.data.user.name); //เก็บ name ใน localstorage
-          localStorage.setItem("department", response.data.user.department); //เก็บ department ใน localstorage
-          localStorage.setItem("position", response.data.user.position); //เก็บ position ใน localstorage
-          router.push("/assets"); // เปลี่ยนไปหน้า assets
-          setIsLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
-        } else {
-          console.log("Login failed: Try again");
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/users/login`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      } catch (error) {
-        // console.error(error.response.data);
-        // console.error("Error during login:", error.response.data.detail);
-        Swal.fire({
-          icon: "warning", // Warning icon
-          title: "Login failed <br> please try again",
-          confirmButtonText: "OK", // Confirmation button
-        });
-      } finally {
-        setIsLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
-        return; // หยุดการทำงานเพิ่มเติมในฟังก์ชันนี้
-      }
-    } // else
-  };
+      );
 
+      if (response.data) {
+        console.log("Logined successfully:", response.data);
+        localStorage.setItem("user_id", response.data.user.id);
+        localStorage.setItem("access_token", response.data.access_token);
+        localStorage.setItem("username", response.data.user.username);
+        localStorage.setItem("name", response.data.user.name);
+        localStorage.setItem("department", response.data.user.department);
+        localStorage.setItem("position", response.data.user.position);
+        router.push("/assets"); // Redirect to assets page
+      } else {
+        console.log("Login failed: Try again");
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "warning",
+        title: "Login failed <br> please try again",
+        confirmButtonText: "OK",
+      });
+    } finally {
+      setIsLoading(false); // Stop Loading
+    }
+  };
 
   const handleGoogleLogin = () => {
     // เพิ่มการเชื่อมต่อกับ Google OAuth API
@@ -92,7 +83,7 @@ const Login = () => {
     // ตรวจสอบ token ที่มีอยู่
     const token = localStorage.getItem("access_token");
     const username = localStorage.getItem("username");
-    
+
     if (token && username) {
       // ถ้ามี token และ username ให้ redirect ไปหน้า assets ทันที
       router.push("/assets");

@@ -45,7 +45,7 @@ const Permission = () => {
 
             // *************************************   Get Api >> Authorizer user ข้อมูลผู้ให้สิทธิ์  ********************************************************
             const user_id = localStorage.getItem('user_id');  // Get user_id ที่เก็บใน localstorage
-            axios.get(`http://127.0.0.1:8000/users/${user_id}`)
+            axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/users/${user_id}`)
             .then((response) => {
             console.log(response.data); //   ******* ข้อมูลจะอยู่ใน `response.data` ********
             setLevelAuthorizer(response.data.level)
@@ -59,7 +59,7 @@ const Permission = () => {
             // ************************* Get Api >> ALL USER  ผู้ใช้ทั้งหมดที่อยู่ Department เดียวกับผู้ให้สิทธิ์ *************************
             const departmentAuthorizer = localStorage.getItem('department'); // ดึง department จาก localStorage
             const level = localStorage.getItem('level'); // ดึง level จาก localStorage       
-            axios.get(`http://127.0.0.1:8000/users`)
+            axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/users`)
             .then((responseAllUser) => {
 
                 const allUsers = responseAllUser.data;
@@ -142,7 +142,7 @@ const Permission = () => {
             setLoading(true); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
             // ส่งข้อมูลไปยัง API  *******************************************************************
             // console.log(userId)
-            axios.put(`http://127.0.0.1:8000/users/${userId}`,{ level:selectedLevel },{
+            axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/users/${userId}`,{ level:selectedLevel },{
                 headers: {
                     'Content-Type': 'application/json',
                 },

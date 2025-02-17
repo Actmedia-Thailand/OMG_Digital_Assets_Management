@@ -83,7 +83,7 @@ const Profile = () => {
 
       // เรียก API ด้วย axios ****************************************
       axios
-        .post("http://127.0.0.1:8000/users/reset_password", ResetPassFormObj, {
+        .post(`${process.env.NEXT_PUBLIC_BASE_URL}/users/reset_password`, ResetPassFormObj, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -149,7 +149,7 @@ const Profile = () => {
 
         // +++++++++++   Get Api Data >> USER table ++++++++++++++++++++++++++++++++++++++++++
         const user_id = localStorage.getItem('user_id');  // Get user_id ที่เก็บใน localstorage
-        axios.get(`http://127.0.0.1:8000/users/${user_id}`)
+        axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/users/${user_id}`)
         .then((response) => {
           console.log(response.data); //   ******* ข้อมูลจะอยู่ใน `response.data` ********
           setUsername(response.data.username); //เก็บข้อมูลจาก api เก็บลง UseState

@@ -76,9 +76,8 @@ const Register = () => {
         level: Number(level)
       };
 
-
       // เรียก API ด้วย axios ++++++++++++++++++++++++++++++++++++++++++++++
-      axios.post('http://127.0.0.1:8000/users/register', registerFormObj, {
+      axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/users/register`, registerFormObj, {
         headers: {
           'Content-Type': 'application/json'
         }

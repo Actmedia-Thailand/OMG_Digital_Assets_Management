@@ -21,10 +21,9 @@ const ProtectedRoute = ({ children }) => {
     else {
       setIsAuthorized(true); // อนุญาตการเข้าถึง page
     }
-
     // ++++++++++++++ Get api for check user have เชคว่า user มีอยู่มั๊ย? ++++++++++++++++++++++++++++++++++
     const user_id = localStorage.getItem('user_id');  // Get user_id ที่เก็บใน localstorage
-    axios.get(`http://127.0.0.1:8000/users/${user_id}`)
+    axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/users/${user_id}`)
     .then((response) => {
       // console.log(response.data); //   ******* ข้อมูลจะอยู่ใน `response.data` ********
     })
