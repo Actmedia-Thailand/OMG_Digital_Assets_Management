@@ -1,22 +1,20 @@
 "use client"; 
 
-import { Box, Typography } from "@mui/material";
+import * as React from 'react';
+import { LineChart } from '@mui/x-charts/LineChart';
 
-export default function ComponentC() {
+export default function BasicArea() {
   return (
-    <Box
-      sx={{
-        width: "100vw",
-        height: "100vh",
-        bgcolor: "blue",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Typography variant="h1" color="white" fontWeight="bold">
-        Component C
-      </Typography>
-    </Box>
+    <LineChart
+      xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
+      series={[
+        {
+          data: [2, 5.5, 2, 8.5, 1.5, 5],
+          area: true,
+        },
+      ]}
+      width={500}
+      height={300}
+    />
   );
 }
