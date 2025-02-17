@@ -1,4 +1,4 @@
-"use client"; // บอกให้ Next.js รู้ว่านี่เป็น Client-Side Component
+"use client";  // บอกให้ Next.js รู้ว่านี่เป็น Client-Side Component
 import Loader2 from "@/components/loader2";
 
 import { useState, useEffect } from "react";
@@ -12,6 +12,7 @@ import axios from "axios"; // ใช้เรียก api
 import Swal from "sweetalert2"; // Import SweetAlert2
 import { Suspense } from "react";
 
+
 const Login = () => {
   const [username, setUsername] = useState(""); // เก็บค่า username
   const [password, setPassword] = useState(""); // เก็บค่า password
@@ -19,26 +20,21 @@ const Login = () => {
   const router = useRouter(); //redirect page
   const [isLoading, setIsLoading] = useState(true); //Loading
 
-  // ฟังก์ชันจัดการเมื่อ click submit form
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    // console.log("Username:", username);
-    // console.log("Password:", password);
-
-    // ตรวจสอบว่า username หรือ password ว่าง
     if (!username || !password) {
       Swal.fire({
-        // Library alert warning
-        icon: "warning", // Warning icon
+        icon: "warning",
         title: "Required all field",
         text: "Please fill in both Username and Password .",
         confirmButtonText: "OK", // Confirmation button
       });
-      return; // หยุดการทำงานถ้าข้อมูลไม่ครบ
-    } else {
-      // สร้าง body สำหรับ request
-      // สร้างออบเจ็กต์ data เพื่อเก็บข้อมูล username และ password สำหรับการส่งไปยัง API
+      return;
+    }
+
+    setIsLoading(true);  // เปิด Loading
+    try {
       const data = {
         username: username,
         password: password,
@@ -85,6 +81,7 @@ const Login = () => {
     } // else
   };
 
+
   const handleGoogleLogin = () => {
     // เพิ่มการเชื่อมต่อกับ Google OAuth API
     window.location.href =
@@ -92,8 +89,18 @@ const Login = () => {
   };
 
   useEffect(() => {
-    setTimeout(() => setIsLoading(false)); // จำลองการโหลดข้อมูล
-  }, []);
+    // ตรวจสอบ token ที่มีอยู่
+    const token = localStorage.getItem("access_token");
+    const username = localStorage.getItem("username");
+    
+    if (token && username) {
+      // ถ้ามี token และ username ให้ redirect ไปหน้า assets ทันที
+      router.push("/assets");
+    } else {
+      // ถ้าไม่มี token ให้ปิด loading
+      setIsLoading(false);
+    }
+  }, [router]); // เพิ่ม router เป็น dependency
 
   if (isLoading) {
     return <Loader2 />;

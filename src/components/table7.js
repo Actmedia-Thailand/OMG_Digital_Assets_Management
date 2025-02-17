@@ -47,8 +47,10 @@ const Table7 = ({
   showSidebarLeft,
   setShowSidebarLeft,
   showSidebarRight,
-  setShowSidebarRight,
+  setShowSidebarRight
+  
 }) => {
+  // ++++++++++++++++ useState +++++++++++++++++++++++++++++++++++++++++++++
   const [anchorElCsv, setAnchorElCsv] = useState(null); //ใช้ในการเปิดปิดเมนู
   const [anchorElPdf, setAnchorElPdf] = useState(null); //ใช้ในการเปิดปิดเมนู
   const [anchorElExcel, setAnchorElExcel] = useState(null); //ใช้ในการเปิดปิดเมนู
@@ -57,6 +59,7 @@ const Table7 = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [viewName, setViewName] = useState("");
+  const [levelView, setLevelView] = useState(1); // ประเภทของ View ที่ถูกเลือก
   const [groupName, setGroupName] = useState("");
   const [isShowFiltered, setIsShowFiltered] = useState(false);
   const [filteredData, setFilteredData] = useState(data); // เพิ่มตัวแปร state ของ filteredData
@@ -66,7 +69,15 @@ const Table7 = ({
   const [columnFilters, setColumnFilters] = useState([]);
   const [sorting, setSorting] = useState([]);
   const [grouping, setGrouping] = useState([]);
+  const [isEditingEnabled, setIsEditingEnabled] = useState(false);  // เพิ่ม useState สำหรับเก็บค่า enableEditing
+  const user_level = localStorage.getItem('level');  // ถ้า user_level = 1 จะ set เป็น false ไม่แสดงคอลัมน์ Action
 
+  // useEffect เพื่อตรวจสอบ user_level เมื่อ component โหลด ++++++++++++++++++++++++++++++++
+  useEffect(() => {
+      const userLevelNum = parseInt(user_level, 10);  // แปลงเป็น number ด้วย parseInt() หรือ Number()
+      setIsEditingEnabled(userLevelNum !== 1);
+  }, []);
+  
   //reponsive
   const isMobile = useMediaQuery("(max-width: 1000px)");
   //ฟังชั่นเปิดขปิดเมนู
@@ -123,17 +134,26 @@ const Table7 = ({
     deleteAsset(selectedAsset.id);
     setIsDeleteModalOpen(false);
   };
+  
   //!-----------------------------------------------------------------TABLE--------------------------------------------------------
 
   // สร้าง table instance
   const table = useMaterialReactTable({
     columns,
-    data: filteredData, // Using filteredData in the table
-    enableEditing: true, // Enable editing
-    enableColumnOrdering: true,
-    enableBottomToolbar: true,
-    positionBottomToolbar: "sticky",
-    //---------------------------------------------Action-----------------------------------------
+    data: filteredData, // Using filteredData in the table  ข้อมูลที่แสดงในตาราง
+    enableEditing: isEditingEnabled, // Enable editing  เปิดใช้การแก้ไขข้อมูล ****** คอลัมน์ Action แสดงเมื่อ user_level ไม่ใช่ 1
+    enableColumnOrdering: true, // สามารถจัดเรียง column ได้
+    enableBottomToolbar: true, // เปิดใช้งาน toolbar ด้านล่าง
+    positionBottomToolbar: "sticky", // ตำแหน่งของ toolbar ด้านล่าง
+    // enableColumnActions: false,
+
+    
+    muiTopToolbarProps: {
+      sx: {
+        backgroundColor: '#e3f2fd', // สีฟ้าอ่อน
+      },
+    },
+    //-------------------------------------------Action-----------------------------------------
     renderRowActions: ({ row, table }) => (
       <Box style={{ display: "flex" }}>
         {/* Edit Button */}
@@ -179,7 +199,7 @@ const Table7 = ({
         size: 200,
       },
     },
-    enableGrouping: true,
+    enableGrouping: true, // การจัดกลุ่มข้อมูล
     groupedColumnMode: "remove",
     ///ค่าเริ่มต้น-------------------------------------------------------------------------
     initialState: {
@@ -187,12 +207,14 @@ const Table7 = ({
       expanded: true, // ปิดการขยายกรุ๊ปเริ่มต้น
       pagination: { pageIndex: 0, pageSize: 30 },
     },
+    
     ///
-    enableRowSelection: true, //check box
+    enableRowSelection: true, //check box  การเลือกแถว (checkbox)
     enableStickyHeader: true, // ล็อคหัว
     positionToolbarAlertBanner: "top", //แจ้งเตือนถ้าอยากให้ group ไปข้างล่างก็bottomซะ
     enableRowNumbers: true, // เลขแถว
     ///
+    
     isMultiSortEvent: () => true,
     maxMultiSortColCount: 3,
     columnFilterDisplayMode: "popover",
@@ -241,18 +263,24 @@ const Table7 = ({
           gap: "16px",
           padding: "8px",
           flexWrap: "wrap",
+          
         }}
       >
-        <Tooltip title="Create">
-          <Button
-            variant="contained"
-            onClick={() => {
-              table.setCreatingRow(true);
-            }}
-          >
-            <Add />
-          </Button>
-        </Tooltip>
+
+        {user_level !== '1' && ( // ถ้า user_level ไม่ใช่ 1 แสดงปุ่ม ADD 
+          <Tooltip title="Create">
+            <Button
+              sx={{ background: '#118DCE' }}
+              variant="contained"
+              onClick={() => {
+                table.setCreatingRow(true);
+              }}
+            >
+              <Add />
+            </Button>
+          </Tooltip>
+        )}
+   
         {/* CSV Dropdown */}
         <Button
           aria-controls="export-csv-menu"
@@ -413,6 +441,15 @@ const Table7 = ({
         </Menu>
       </Box>
     ),
+
+    // ปรับแต่งสไตล์ของ header
+    muiTableHeadCellProps: {
+          sx: {
+            backgroundColor: '#f5f5f5', // พื้นหลังส่วนหัว
+            borderBottom: '2px solid #e0e0e0', // เส้นใต้ส่วนหัว
+            fontWeight: 'bold',
+          },
+    },
   });
 
   //?ฟังชั่นเพิ่ม merge filter-------------------------------------------------------------------
@@ -422,7 +459,7 @@ const Table7 = ({
     setGroupName("");
   };
 
-  // ฟังก์ชันบันทึก ID ของแถวที่ผ่านการกรองและรวมเข้าในกลุ่มใหม่
+  // ฟังก์ช��นบันทึก ID ของแถวที่ผ่านการกรองและรวมเข้าในกลุ่มใหม่
   const handleSaveFilteredIds = () => {
     const filteredIds = table.getRowModel().rows.map((row) => row.original.id);
     setGroupedIds((prevGroups) => ({
@@ -458,7 +495,8 @@ const Table7 = ({
   const { mutateAsync: updateView } = useUpdateView();
   const { mutateAsync: deleteView } = useDeleteView();
 
-  const handleAddView = () => {
+  const handleAddView = () => {  // Add View ++++++++++++++++++++++++++++++++++++++++
+    const user_id = localStorage.getItem("user_id");
     const filteredFilters = columnFilters.filter((filter) => {
       // ตรวจสอบว่า value ของ filter เป็น array หรือไม่ และใน array นั้นไม่มีค่า null หรือ undefined
       if (Array.isArray(filter.value)) {
@@ -468,11 +506,12 @@ const Table7 = ({
       // ถ้า value ไม่เป็น array ก็ให้ส่งข้อมูลไปปกติ
       return true;
     });
+    console.log(levelView);
     const newView = {
-      id_user: "b47b3ac6-8c40-4f05-ad6f-98a7d1e74b39",
-      data_type: "Asset",
+      id_user: user_id,
+      data_type: "Asset", // ประเภทของข้อมูล ตัวอย่าง หน้า Asset, หน้า .etc
       name: viewName,
-      levelView: 1,
+      levelView: levelView,
       filters: filteredFilters,
       sorting: [...sorting],
       group: [...grouping], // สามารถเพิ่ม group field อื่นๆ ที่ต้องการได้
@@ -481,13 +520,14 @@ const Table7 = ({
     handleCloseViewDialog();
   };
 
-  const handleDeleteView = (view) => {
+  const handleDeleteView = (view) => { // Delete View +++++++++++++++++++++++++++++++
     deleteView(view.id);
   };
 
-  const handleEditView = (view, newName) => {
+  const handleEditView = (view, newName,newLevelView) => {  // Edit View ++++++++++++++++++++++++++++++++++++++++
     const newEditView = {
       name: newName,
+      levelView: newLevelView,
     };
     updateView({
       id: view.id, // ส่ง id ของแถวที่ต้องการอัปเดต
@@ -496,7 +536,7 @@ const Table7 = ({
   };
 
   // เปิด-ปิด Dialog
-  const handleCloseViewDialog = () => {
+  const handleCloseViewDialog = () => { // Close View Dialog ++++++++++++++++++++++++++++++++++++++++
     setIsViewDialogOpen(false);
     setViewName("");
   };
@@ -506,10 +546,19 @@ const Table7 = ({
     setSorting(view.sorting);
     setGrouping(view.group);
   };
+  
   //!----------------------------------------------------------------------------------------------------------------------------------------------------
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Stack direction={isMobile ? "column-reverse" : "row"} gap="8px">
+      <Stack 
+        direction={isMobile ? "column-reverse" : "row"} 
+        gap="8px"
+        sx={{
+          flex: 1,
+          width: '100%',
+          height: '100%',
+        }}
+      >
         <ViewManager
           views={views}
           isViewDialogOpen={isViewDialogOpen}
@@ -517,6 +566,8 @@ const Table7 = ({
           handleButtonClick={handleButtonClick}
           viewName={viewName}
           setViewName={setViewName}
+          levelView={levelView}
+          setLevelView={setLevelView}
           handleCloseViewDialog={handleCloseViewDialog}
           handleAddView={handleAddView}
           showSidebarLeft={showSidebarLeft}
@@ -525,8 +576,28 @@ const Table7 = ({
           handleEditView={handleEditView}
         />
         {/* Table หลัก -----------------------------------------------------------------*/}
-        <MaterialReactTable table={table} />
-
+        <Box sx={{ 
+          flexGrow: 1,
+          minWidth: 0, // ป้องกันการขยายเกินขอบเขต
+          height: '100%'
+        }}>
+          <MaterialReactTable 
+            table={table}
+            muiTablePaperProps={{
+              sx: {
+                flexGrow: 1,
+                width: '100%',
+                height: '100%',
+              }
+            }}
+            muiTableContainerProps={{
+              sx: {
+                maxHeight: 'calc(100vh - 350px)',
+                minHeight: '400px',
+              }
+            }}
+          />
+        </Box>
         {/* Filter ด้านขวา ---------------------------------------------------------------*/}
         {showSidebarRight && (
           <Paper>
@@ -547,13 +618,14 @@ const Table7 = ({
                     <Button
                       variant="contained"
                       onClick={() => setIsDialogOpen(true)}
+                      sx={{ background: '#118DCE' }}
                     >
                       Merge Filtered
                     </Button>
                     <Button
                       variant="contained"
                       onClick={handleFilterBySavedIds}
-                      sx={{ ml: 2 }}
+                      sx={{ ml: 2, background: '#118DCE' }}
                     >
                       {isShowFiltered ? "Show All" : "Show Merge"}
                     </Button>
@@ -581,6 +653,7 @@ const Table7 = ({
                     Please enter a name for this group:
                   </DialogContentText>
                   <TextField
+                    required
                     autoFocus
                     margin="dense"
                     label="Group Name"

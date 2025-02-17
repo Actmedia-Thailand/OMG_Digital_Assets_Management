@@ -46,3 +46,140 @@
 .view-manager.d-block {
     transform: translateX(0); /* แสดง Sidebar เมื่อเปิด */
 }
+
+
+
+/* กำหนดความสูงและการ scroll สำหรับส่วนของ views */
+.views-section {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+  }
+  
+  /* Custom styling สำหรับ scrollbar */
+  .views-section::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  /* สีพื้นหลังของ track scrollbar */
+  .views-section::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+  
+  /* สีและรูปแบบของตัว scrollbar */
+  .views-section::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+  
+  /* เมื่อ hover ที่ scrollbar */
+  .views-section::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+
+
+  /* test */
+  .views-section {
+    max-height: 100hv; /* หรือความสูงที่ต้องการ */
+    overflow-y: auto;
+    position: relative;
+  }
+  
+  /* .dropdown {
+    position: relative;
+  }
+  
+  .dropdown-menu {
+    position: absolute !important;
+    z-index: 1059;
+    right: 0;
+  } */
+
+
+  /* View Item Styling */
+.view-item {
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  background-color: #f8f9fa;
+  border: 1px solid transparent;
+}
+
+.view-item:hover {
+  background-color: #D6F2FF;
+  border-color: #dee2e6;
+  cursor: pointer;
+}
+
+/* View Icon Styling */
+.view-icon {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* View Text Styling */
+.view-text {
+  color: #495057 !important;
+  font-size: 0.9rem;
+  /* flex-grow: 1; */
+  white-space: nowrap;
+  /* overflow: hidden; */
+  text-overflow: ellipsis;
+}
+
+/* Active View Styling */
+.view-item.active {
+  background-color: #e7f1ff;
+  border-color: #b8daff;
+}
+
+.view-item.active .view-icon {
+  color: #0d6efd;
+}
+
+.view-item.active .view-text {
+  color: #0d6efd !important;
+  font-weight: 500;
+}
+
+/* Views Section Styling */
+.views-section {
+  /* max-height: 300px; */
+  /* overflow-y: auto; */
+  padding-right: 4px;
+}
+
+.views-section::-webkit-scrollbar {
+  /* width: 4px; */
+}
+
+.views-section::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.views-section::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.views-section::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+
+.three-dots-button {
+  background: transparent !important;
+  border: none !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+}
+
+.three-dots-button:hover {
+  background-color: #b0e1f7 !important; /* สีฟ้าอ่อนเมื่อ hover */
+}
+
+/* ถ้าต้องการให้ transition นุ่มนวลขึ้น */
+.three-dots-button {
+  transition: background-color 0.2s ease;
+}

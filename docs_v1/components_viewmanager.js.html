@@ -1,8 +1,54 @@
-"use client";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>components/viewmanager.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#Login">Login</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#Permission">Permission</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#Profile">Profile</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ProtectedRoute">ProtectedRoute</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#Register">Register</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ViewManager">ViewManager</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">components/viewmanager.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use client";
 
 import React, { useState, useRef, useEffect } from "react";
 import "./style/viewmanager.css"; // import css file
 
+
+/**
+ * ViewManager component for managing user profile information.
+ * @returns {JSX.Element} The rendered component.
+ */
 const ViewManager = ({
   views,
   isViewDialogOpen,
@@ -36,15 +82,18 @@ const ViewManager = ({
     setIsDropdownOpen(isDropdownOpen === index ? null : index);
   };
 
-  // Handle click outside
+  /**
+   * Handle click outside of the dropdown to close it.
+   * @param {Event} event - The event triggered by the click.
+   */
   const handleClickOutside = (event) => {
     if (
-      isDropdownOpen !== null &&
-      dropdownRefs.current[isDropdownOpen] &&
+      isDropdownOpen !== null &amp;&amp;
+      dropdownRefs.current[isDropdownOpen] &amp;&amp;
       !dropdownRefs.current[isDropdownOpen].contains(event.target)
     ) {
       setIsDropdownOpen(null);
-    } 
+    }
   };
 
   // Add event listener for outside clicks
@@ -52,10 +101,13 @@ const ViewManager = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-    };  
-  }, [isDropdownOpen]); 
+    };
+  }, [isDropdownOpen]);
 
-  // ฟังชั่นสำหรับดึงข้อมูลสำหรับ Rename
+  /**
+   * Function to handle renaming a view.
+   * @param {Object} view - The view object to be renamed.
+   */
   const handleRename = (view) => {
     console.log(levelView);
     console.log("Renaming view:", view.name, view.levelView);
@@ -66,7 +118,10 @@ const ViewManager = ({
     setIsDropdownOpen(null); // ปิด Dropdown หลังเลือกเมนู
   };
 
-  // ฟังชั่นสำหรับดึงข้อมูลสำหรับ Delete
+  /**
+   * Function to handle deleting a view.
+   * @param {Object} view - The view object to be deleted.
+   */
   const handleDelete = (view) => {
     console.log("Deleting view:", view.name);
     setSelectedView(view); // ++++++++++++++++ ตั้งค่า View ที่เลือก
@@ -74,10 +129,12 @@ const ViewManager = ({
     setIsDropdownOpen(null); // ปิด Dropdown หลังเลือกเมนู
   };
 
-  // Confirm Rename
+  /**
+   * Confirm the renaming of a view and update the state.
+   */
   const confirmRename = () => {
     console.log(
-      "Renamed view & levelView :",
+      "Renamed view &amp; levelView :",
       selectedView.name,
       "and",
       selectedView.levelView,
@@ -91,14 +148,21 @@ const ViewManager = ({
     setIsRenameModalOpen(false); // ++++++++++++++++ ปิด Rename Modal
   };
 
-  // Confirm Delete
+  /**
+   * Confirm the deletion of a view and update the state.
+   */
   const confirmDelete = () => {
     console.log("Deleted view:", selectedView.name); // ++++++++++++++++ Console log การลบ
     handleDeleteView(selectedView);
     setIsDeleteModalOpen(false); // ++++++++++++++++ ปิด Delete Modal
   };
 
-  // ฟิลเตอร์ Views ตามชื่อที่ค้นหา
+  /**
+   * Filter views based on the search term.
+   * @param {Array} views - The array of views to filter.
+   * @param {string} searchTerm - The term to filter views by.
+   * @returns {Array} - The filtered array of views.
+   */
   const filteredViews = views.filter((view) =>
     (view.name ?? "")
       .toString()
@@ -107,82 +171,82 @@ const ViewManager = ({
   );
 
   return (
-    <>
-      {showSidebarLeft && (
-        <div
+    &lt;>
+      {showSidebarLeft &amp;&amp; (
+        &lt;div
           className="container container-left-sidebar"
           style={{ maxWidth: "282px" }}
         >
-          {/* <p>{viewCategory}</p> */}
-          <div className="card mb-3">
-            <div className="card-body">
+          {/* &lt;p>{viewCategory}&lt;/p> */}
+          &lt;div className="card mb-3">
+            &lt;div className="card-body">
               {/* ช่องค้นหาพร้อมไอคอน Search ++++++++++++++++++++++++++++++++++++*/}
-              <div className="input-group mb-3">
-                <span className="input-group-text bg-white border-end-0">
+              &lt;div className="input-group mb-3">
+                &lt;span className="input-group-text bg-white border-end-0">
                   {/*  ไอคอน Search */}
-                  <i className="bi bi-search" style={{ color: "#118DCE" }}></i>
-                </span>
-                <input
+                  &lt;i className="bi bi-search" style={{ color: "#118DCE" }}>&lt;/i>
+                &lt;/span>
+                &lt;input
                   type="text"
                   className="form-control border-start-0" // ลบขอบซ้ายเพื่อความต่อเนื่อง
                   placeholder="Search views..." // ++++++++++++++++ ข้อความ Placeholder
                   value={searchTerm} // ++++++++++++++++ เชื่อมกับ state searchTerm
                   onChange={(e) => setSearchTerm(e.target.value)} // ++++++++++++++++ อัปเดตค่าการค้นหา
                 />
-              </div>
+              &lt;/div>
 
               {/* My view ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */}
-              <div className="d-flex justify-content-between">
-                <h6 className="card-title fw-bold">My views</h6>
+              &lt;div className="d-flex justify-content-between">
+                &lt;h6 className="card-title fw-bold">My views&lt;/h6>
                 {/* +++++++++ ปุ่ม Add views ++++++++++ */}
-                <i
+                &lt;i
                   className="bi bi-plus-square me-2 icon-hover"
                   onClick={() => setIsViewDialogOpen(true)}
                   style={{ color: "#118DCE" }}
-                ></i>
-              </div>
-              <hr />
+                >&lt;/i>
+              &lt;/div>
+              &lt;hr />
               {/*  Filter My View */}
-              <div className="views-section">
+              &lt;div className="views-section">
                 {filteredViews
                   .filter(
-                    (view) => view.levelView === 1 && view.id_user === user_id
+                    (view) => view.levelView === 1 &amp;&amp; view.id_user === user_id
                   ) // กรองข้อมูลตาม levelView และ id_user
                   .map((view, index) => (
-                    <div
+                    &lt;div
                       key={`myview-${index}`} // เปลี่ยน key ให้เป็นเอกลักษณ์
                       className="d-flex align-items-center justify-content-between py-2 px-2 mb-1 hover-list-view-bg view-item"
                     >
-                      <i
+                      &lt;i
                         className="bi bi-table me-2"
                         style={{ color: "#118DCE" }}
-                      ></i>
-                      <button
+                      >&lt;/i>
+                      &lt;button
                         className="btn btn-link text-start text-dark p-0 pe-1 text-decoration-none view-menu-text view-text"
                         onClick={() => handleButtonClick(view)}
                       >
                         {view.name}
-                      </button>
+                      &lt;/button>
 
                       {/* Dropdown Menu */}
-                      <div
+                      &lt;div
                         className="dropdown"
                         ref={(el) =>
                           (dropdownRefs.current[`myview-${index}`] = el)
                         } // เปลี่ยน ref key
                       >
-                        <button
+                        &lt;button
                           className="btn btn-light btn-sm three-dots-button"
                           onClick={() => toggleDropdown(`myview-${index}`)} // เปลี่ยน toggle key
                         >
-                          <i
+                          &lt;i
                             className="bi bi-three-dots-vertical"
                             style={{ color: "#118DCE" }}
-                          ></i>
-                        </button>
+                          >&lt;/i>
+                        &lt;/button>
 
-                        {isDropdownOpen === `myview-${index}` && (
-                          <ul
+                        {isDropdownOpen === `myview-${index}` &amp;&amp; (
+                          &lt;ul
                             className="dropdown-menu show mt-1 shadow-sm"
                             style={{
                               display: "block",
@@ -194,76 +258,76 @@ const ViewManager = ({
                               fontSize: "0.875rem", // ลดขนาดตัวอักษร
                             }}
                           >
-                            <li>
-                              <button
+                            &lt;li>
+                              &lt;button
                                 className="dropdown-item"
                                 onClick={() => handleRename(view)}
                               >
                                 Rename
-                              </button>
-                            </li>
-                            <li>
-                              <button
+                              &lt;/button>
+                            &lt;/li>
+                            &lt;li>
+                              &lt;button
                                 className="dropdown-item text-danger"
                                 onClick={() => handleDelete(view)}
                               >
                                 Delete
-                              </button>
-                            </li>
-                          </ul>
+                              &lt;/button>
+                            &lt;/li>
+                          &lt;/ul>
                         )}
-                      </div>
-                    </div>
+                      &lt;/div>
+                    &lt;/div>
                   ))}
-              </div>
+              &lt;/div>
 
               {/* All Views  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/}
-              <div className="d-flex justify-content-between pt-3">
-                <h6 className="card-title fw-bold">All views</h6>
-              </div>
-              <hr />
+              &lt;div className="d-flex justify-content-between pt-3">
+                &lt;h6 className="card-title fw-bold">All views&lt;/h6>
+              &lt;/div>
+              &lt;hr />
               {/* Filter All View */}
-              <div className="views-section">
+              &lt;div className="views-section">
                 {filteredViews
                   .filter((view) => view.levelView === 2) // กรองข้อมูลตาม levelView
                   .map((view, index) => (
-                    <div
+                    &lt;div
                       key={`allview-${index}`} // เปลี่ยน key ให้เป็นเอกลักษณ์
                       className="d-flex align-items-center justify-content-between py-2 px-2 mb-1 hover-list-view-bg view-item"
                     >
-                      <i
+                      &lt;i
                         className="bi bi-table me-2"
                         style={{ color: "#118DCE" }}
-                      ></i>
-                      <button
+                      >&lt;/i>
+                      &lt;button
                         className="btn btn-link text-start text-dark p-0 text-decoration-none view-menu-text  view-text"
                         onClick={() => handleButtonClick(view)}
                       >
                         {view.name}
-                      </button>
+                      &lt;/button>
 
                       {/* Dropdown Menu */}
-                      <div
+                      &lt;div
                         className="dropdown"
                         ref={(el) =>
                           (dropdownRefs.current[`allview-${index}`] = el)
                         } // เปลี่ยน ref key
                       >
                         {/* เปลี่ยน toggle key แสดงปุ่มเฉพาะเมื่อ user_level ไม่ใช่ 1 */}
-                        {user_level !== "1" && (
-                          <button
+                        {user_level !== "1" &amp;&amp; (
+                          &lt;button
                             className="btn btn-light btn-sm three-dots-button"
                             onClick={() => toggleDropdown(`allview-${index}`)}
                           >
-                            <i
+                            &lt;i
                               className="bi bi-three-dots-vertical"
                               style={{ color: "#118DCE" }}
-                            ></i>
-                          </button>
+                            >&lt;/i>
+                          &lt;/button>
                         )}
 
-                        {isDropdownOpen === `allview-${index}` && (
-                          <ul
+                        {isDropdownOpen === `allview-${index}` &amp;&amp; (
+                          &lt;ul
                             className="dropdown-menu show mt-1 shadow-sm"
                             style={{
                               display: "block",
@@ -275,53 +339,53 @@ const ViewManager = ({
                               fontSize: "0.875rem", // ลดขนาดตัวอักษร
                             }}
                           >
-                            <li>
-                              <button
+                            &lt;li>
+                              &lt;button
                                 className="dropdown-item"
                                 onClick={() => handleRename(view)}
                               >
                                 Rename
-                              </button>
-                            </li>
-                            <li>
-                              <button
+                              &lt;/button>
+                            &lt;/li>
+                            &lt;li>
+                              &lt;button
                                 className="dropdown-item text-danger"
                                 onClick={() => handleDelete(view)}
                               >
                                 Delete
-                              </button>
-                            </li>
-                          </ul>
+                              &lt;/button>
+                            &lt;/li>
+                          &lt;/ul>
                         )}
-                      </div>
-                    </div>
+                      &lt;/div>
+                    &lt;/div>
                   ))}
-              </div>
-            </div>
-          </div>
+              &lt;/div>
+            &lt;/div>
+          &lt;/div>
 
           {/* Add View Dialog */}
-          {isViewDialogOpen && (
-            <div
+          {isViewDialogOpen &amp;&amp; (
+            &lt;div
               className="modal show d-block"
               tabIndex="-1"
               role="dialog"
               style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
             >
-              <div className="modal-dialog" role="document">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title">Save Your View</h5>
-                    <button
+              &lt;div className="modal-dialog" role="document">
+                &lt;div className="modal-content">
+                  &lt;div className="modal-header">
+                    &lt;h5 className="modal-title">Save Your View&lt;/h5>
+                    &lt;button
                       type="button"
                       className="btn-close"
                       aria-label="Close"
                       onClick={handleCloseViewDialog}
-                    ></button>
-                  </div>
-                  <div className="modal-body">
-                    <p>Please enter a name for this View :</p>
-                    <input
+                    >&lt;/button>
+                  &lt;/div>
+                  &lt;div className="modal-body">
+                    &lt;p>Please enter a name for this View :&lt;/p>
+                    &lt;input
                       type="text"
                       className="form-control"
                       placeholder="View Name"
@@ -329,51 +393,51 @@ const ViewManager = ({
                       onChange={(e) => setViewName(e.target.value)}
                     />
 
-                    {user_level !== "1" && (
-                      <div className="option-view pt-4">
+                    {user_level !== "1" &amp;&amp; (
+                      &lt;div className="option-view pt-4">
                         {/* Dropdown เลือกประเภท View ************ */}
                         {/* Only show the dropdown if user_level is not 1 */}
 
-                        <>
-                          <p>Select a view category :</p>
-                          <select
+                        &lt;>
+                          &lt;p>Select a view category :&lt;/p>
+                          &lt;select
                             className="form-select"
                             value={levelView}
                             onChange={(e) => setLevelView(e.target.value)}
                           >
-                            <option value="1">My Views</option>
-                            <option value="2">All Views</option>
-                          </select>
-                        </>
-                      </div>
+                            &lt;option value="1">My Views&lt;/option>
+                            &lt;option value="2">All Views&lt;/option>
+                          &lt;/select>
+                        &lt;/>
+                      &lt;/div>
                     )}
-                  </div>
+                  &lt;/div>
 
-                  <div className="modal-footer">
-                    <button
+                  &lt;div className="modal-footer">
+                    &lt;button
                       type="button"
                       className="btn btn-secondary"
                       onClick={handleCloseViewDialog}
                     >
                       Cancel
-                    </button>
-                    <button
+                    &lt;/button>
+                    &lt;button
                       type="button"
                       className="btn btn-primary"
                       onClick={handleAddView}
                       disabled={!viewName.trim()}
                     >
                       Save
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+                    &lt;/button>
+                  &lt;/div>
+                &lt;/div>
+              &lt;/div>
+            &lt;/div>
           )}
 
           {/* Rename Modal */}
-          {isRenameModalOpen && ( // ++++++++++++++++ แสดง Rename Modal
-            <div
+          {isRenameModalOpen &amp;&amp; ( // ++++++++++++++++ แสดง Rename Modal
+            &lt;div
               className="modal show d-block"
               tabIndex="-1"
               role="dialog"
@@ -381,112 +445,131 @@ const ViewManager = ({
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
               }}
             >
-              <div className="modal-dialog" role="document">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title">Rename View</h5>
-                    <button
+              &lt;div className="modal-dialog" role="document">
+                &lt;div className="modal-content">
+                  &lt;div className="modal-header">
+                    &lt;h5 className="modal-title">Rename View&lt;/h5>
+                    &lt;button
                       type="button"
                       className="btn-close"
                       aria-label="Close"
                       onClick={() => setIsRenameModalOpen(false)} // ++++++++++++++++ ปิด Modal
-                    ></button>
-                  </div>
-                  <div className="modal-body">
-                    <p>Please enter a new name for this View:</p>
-                    <input
+                    >&lt;/button>
+                  &lt;/div>
+                  &lt;div className="modal-body">
+                    &lt;p>Please enter a new name for this View:&lt;/p>
+                    &lt;input
                       type="text"
                       className="form-control"
                       placeholder="New View Name"
                       value={newViewName} // ++++++++++++++++ แสดงชื่อใหม่
                       onChange={(e) => setNewViewName(e.target.value)} // ++++++++++++++++ เก็บชื่อใหม่เมื่อผู้ใช้พิมพ์
                     />
-                    {user_level !== "1" && (
-                      <div className="option-view pt-4">
+                    {user_level !== "1" &amp;&amp; (
+                      &lt;div className="option-view pt-4">
                         {/* Dropdown เลือกประเภท View ************ */}
-                        <p>Select a view category :</p>
-                        <select
+                        &lt;p>Select a view category :&lt;/p>
+                        &lt;select
                           className="form-select"
                           value={newLevelView}
                           onChange={(e) => setNewLevelView(e.target.value)}
                         >
-                          <option value="1">My Views</option>
-                          <option value="2">All Views</option>
-                        </select>
-                      </div>
+                          &lt;option value="1">My Views&lt;/option>
+                          &lt;option value="2">All Views&lt;/option>
+                        &lt;/select>
+                      &lt;/div>
                     )}
-                  </div>
-                  <div className="modal-footer">
-                    <button
+                  &lt;/div>
+                  &lt;div className="modal-footer">
+                    &lt;button
                       type="button"
                       className="btn btn-secondary"
                       onClick={() => setIsRenameModalOpen(false)} // ++++++++++++++++ ปิด Modal
                     >
                       Cancel
-                    </button>
-                    <button
+                    &lt;/button>
+                    &lt;button
                       type="button"
                       className="btn btn-primary"
                       onClick={confirmRename} // ++++++++++++++++ ยืนยัน Rename
                     >
                       Save
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+                    &lt;/button>
+                  &lt;/div>
+                &lt;/div>
+              &lt;/div>
+            &lt;/div>
           )}
 
           {/* Delete Modal */}
-          {isDeleteModalOpen && ( // ++++++++++++++++ แสดง Delete Modal
-            <div
+          {isDeleteModalOpen &amp;&amp; ( // ++++++++++++++++ แสดง Delete Modal
+            &lt;div
               className="modal show d-block"
               tabIndex="-1"
               role="dialog"
               style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
             >
-              <div className="modal-dialog" role="document">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title text-danger">Confirm Delete</h5>
-                    <button
+              &lt;div className="modal-dialog" role="document">
+                &lt;div className="modal-content">
+                  &lt;div className="modal-header">
+                    &lt;h5 className="modal-title text-danger">Confirm Delete&lt;/h5>
+                    &lt;button
                       type="button"
                       className="btn-close"
                       aria-label="Close"
                       onClick={() => setIsDeleteModalOpen(false)} // ++++++++++++++++ ปิด Modal
-                    ></button>
-                  </div>
-                  <div className="modal-body">
+                    >&lt;/button>
+                  &lt;/div>
+                  &lt;div className="modal-body">
                     {/* // ++++++++++++++++ แสดงชื่อ View ที่จะลบ */}
-                    <p>
+                    &lt;p>
                       Are you sure you want to delete the view{" "}
-                      <strong>{selectedView?.name}</strong> ?
-                    </p>
-                  </div>
-                  <div className="modal-footer">
-                    <button
+                      &lt;strong>{selectedView?.name}&lt;/strong> ?
+                    &lt;/p>
+                  &lt;/div>
+                  &lt;div className="modal-footer">
+                    &lt;button
                       type="button"
                       className="btn btn-secondary"
                       onClick={() => setIsDeleteModalOpen(false)} // ++++++++++++++++ ปิด Modal
                     >
                       Cancel
-                    </button>
-                    <button
+                    &lt;/button>
+                    &lt;button
                       type="button"
                       className="btn btn-danger"
                       onClick={confirmDelete} // ++++++++++++++++ ยืนยันการลบ
                     >
                       Delete
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+                    &lt;/button>
+                  &lt;/div>
+                &lt;/div>
+              &lt;/div>
+            &lt;/div>
           )}
-        </div>
+        &lt;/div>
       )}
-    </>
+    &lt;/>
   );
 };
 
 export default ViewManager;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Thu Jan 09 2025 17:46:11 GMT+0700 (Indochina Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

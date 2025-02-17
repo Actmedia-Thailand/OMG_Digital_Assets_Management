@@ -37,7 +37,7 @@
 /* เมื่อ Hover */
 .navbar-nav .nav-link:hover {
   color: #fff; /* เปลี่ยนสีข้อความเมื่อชี้เมาส์ */
-  background-color: #35C0F6; /* เปลี่ยนพื้นหลังเมื่อชี้เมาส์ */
+  background-color: #118DCE; /* เปลี่ยนพื้นหลังเมื่อชี้เมาส์ */
   text-decoration: none; /* เอาเส้นใต้ลิงก์ออก */
 }
 
@@ -63,12 +63,39 @@
 
 /* === Active Link === */
 .navbar-nav .nav-link.active {
-  color: #fff; /* สีข้อความของลิงก์ที่ active */
-  background-color: #35C0F6; /* สีพื้นหลังลิงก์ที่ active */
+  color: #fff !important; /* สีข้อความของลิงก์ที่ active */
+  background-color: #118DCE; /* สีพื้นหลังลิงก์ที่ active */
 }
 
 .content-marginTop{
   margin-top: 116px;
+}
+
+
+/* Dropdown styles ++++++ ส่วนชื่อ User ตอนกด dropdown  */
+.custom-dropdown {
+  display: block;
+  position: absolute;
+  top: 38px;
+  right: 0;
+  background-color: white;
+  box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+  border-radius: 5px;
+}
+
+.dropdown-user-info {
+  padding: 8px 16px;
+  margin-bottom: 0;
+  border-bottom: 1px solid #eee;
+  color: #6c757d;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropdown-user-info i {
+  font-size: 16px;
 }
 
 /* === เพิ่มความยืดหยุ่นสำหรับหน้าจอขนาดเล็ก === */

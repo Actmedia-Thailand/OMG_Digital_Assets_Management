@@ -124,7 +124,7 @@ const Header = ({ showSidebarLeft, setShowSidebarLeft, showSidebarRight, setShow
                                         }}
                                     >
                                         <Link href="/profile" className="dropdown-item"><i className="bi bi-person"></i> Profile</Link>
-                                        <Link href="#" className="dropdown-item"><i className="bi bi-person-check"></i> Permission</Link>
+                                        <Link href="/permission" className="dropdown-item"><i className="bi bi-person-check"></i> Permission</Link>
                                         <Link href="/" className="dropdown-item" onClick={handleLogout}><i className="bi bi-box-arrow-right"></i> Logout</Link>
                                     </div>
                                 )}
