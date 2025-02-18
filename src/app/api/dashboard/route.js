@@ -9,8 +9,8 @@ const apiUrl =
   "https://stacks.targetr.net/rest-api/v1/screens?groupId=034CD62B516544";
 
 const THAI_TIME_OFFSET = 7 * 60 * 60 * 1000; // UTC+7 hours in milliseconds
-const ONE_HOUR_IN_MS = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
-const ONE_DAYS_IN_MS = 24 * 60 * 60 * 1000; // 1 days in milliseconds
+const ONE_HOUR_IN_MS = 1 * 60 * 60 * 1000; // 1+ hour in milliseconds
+const ONE_DAYS_IN_MS = 24 * 60 * 60 * 1000; // 1+ days in milliseconds
 
 function formatTimestamp(timestamp) {
   const date = new Date(Number(timestamp) + THAI_TIME_OFFSET);
@@ -41,8 +41,8 @@ export async function GET() {
         currentTime - lastLoaderMillis <= ONE_HOUR_IN_MS
           ? "online"
           : currentTime - lastLoaderMillis <= ONE_DAYS_IN_MS
-          ? "offline (1 hour)"
-          : "offline (1 day)";
+          ? "offline (1+ hour)"
+          : "offline (1+ day)";
       return {
         screenId: obj.data.screenId || "-", // Replace missing field with '-'
         displayAspectRatio: obj.data.displayAspectRatio || "-", // Replace missing field with '-'
@@ -60,52 +60,64 @@ export async function GET() {
         {
           TV: 0,
           Online: 0,
-          "Offline (1 hour)": 0,
-          "Offline (1 day)": 0,
+          "Offline (1+ hour)": 0,
+          "Offline (1+ day)": 0,
           Displays: 0,
           "Displays-Online": 0,
-          "Displays-Offline (1 hour)": 0,
-          "Displays-Offline (1 day)": 0,
+          "Displays-Offline (1+ hour)": 0,
+          "Displays-Offline (1+ day)": 0,
           Store: 0,
-          storeCodes: new Set(),
+          storeCodes: new Set(), // Ensure this is always initialized
         },
         {
           Kiosk: 0,
           Online: 0,
-          "Offline (1 hour)": 0,
-          "Offline (1 day)": 0,
+          "Offline (1+ hour)": 0,
+          "Offline (1+ day)": 0,
           Displays: 0,
           "Displays-Online": 0,
-          "Displays-Offline (1 hour)": 0,
-          "Displays-Offline (1 day)": 0,
+          "Displays-Offline (1+ hour)": 0,
+          "Displays-Offline (1+ day)": 0,
           Store: 0,
-          storeCodes: new Set(),
+          storeCodes: new Set(), // Ensure this is always initialized
         },
         {
           Signage: 0,
           Online: 0,
-          "Offline (1 hour)": 0,
-          "Offline (1 day)": 0,
+          "Offline (1+ hour)": 0,
+          "Offline (1+ day)": 0,
           Displays: 0,
           "Displays-Online": 0,
-          "Displays-Offline (1 hour)": 0,
-          "Displays-Offline (1 day)": 0,
+          "Displays-Offline (1+ hour)": 0,
+          "Displays-Offline (1+ day)": 0,
           Store: 0,
-          storeCodes: new Set(),
+          storeCodes: new Set(), // Ensure this is always initialized
         },
         {
           Unknown: 0,
           Online: 0,
-          "Offline (1 hour)": 0,
-          "Offline (1 day)": 0,
+          "Offline (1+ hour)": 0,
+          "Offline (1+ day)": 0,
           Displays: 0,
           "Displays-Online": 0,
-          "Displays-Offline (1 hour)": 0,
-          "Displays-Offline (1 day)": 0,
+          "Displays-Offline (1+ hour)": 0,
+          "Displays-Offline (1+ day)": 0,
           Store: 0,
-          storeCodes: new Set(),
+          storeCodes: new Set(), // Ensure this is always initialized
         },
       ];
+
+      const totalSummary = {
+        "Total Store": 0,
+        Displays: 0,
+        "Displays-Online": 0,
+        "Displays-Offline (1+ hour)": 0,
+        "Displays-Offline (1+ day)": 0,
+        "TV boxes": 0,
+        "TV boxes-Online": 0,
+        "TV boxes-Offline (1+ hour)": 0,
+        "TV boxes-Offline (1+ day)": 0,
+      };
 
       normalizeData.forEach((obj) => {
         // Update total counts for each display aspect ratio
@@ -116,12 +128,12 @@ export async function GET() {
           if (obj.status === "online") {
             result[0].Online += 1;
             result[0]["Displays-Online"] += obj.displaysConnected; // Count online displays
-          } else if (obj.status === "offline (1 hour)") {
-            result[0]["Offline (1 hour)"] += 1;
-            result[0]["Displays-Offline (1 hour)"] += obj.displaysConnected; // Count offline displays (1-7 day)
-          } else if (obj.status === "offline (1 day)") {
-            result[0]["Offline (1 day)"] += 1;
-            result[0]["Displays-Offline (1 day)"] += obj.displaysConnected; // Count offline displays (1 day)
+          } else if (obj.status === "offline (1+ hour)") {
+            result[0]["Offline (1+ hour)"] += 1;
+            result[0]["Displays-Offline (1+ hour)"] += obj.displaysConnected; // Count offline displays (1+ hour)
+          } else if (obj.status === "offline (1+ day)") {
+            result[0]["Offline (1+ day)"] += 1;
+            result[0]["Displays-Offline (1+ day)"] += obj.displaysConnected; // Count offline displays (1+ day)
           }
         } else if (obj.displayAspectRatio === "1080x1920") {
           result[1].Kiosk += 1;
@@ -130,12 +142,12 @@ export async function GET() {
           if (obj.status === "online") {
             result[1].Online += 1;
             result[1]["Displays-Online"] += obj.displaysConnected; // Count online displays
-          } else if (obj.status === "offline (1 hour)") {
-            result[1]["Offline (1 hour)"] += 1;
-            result[1]["Displays-Offline (1 hour)"] += obj.displaysConnected; // Count offline displays (1-7 day)
-          } else if (obj.status === "offline (1 day)") {
-            result[1]["Offline (1 day)"] += 1;
-            result[1]["Displays-Offline (1 day)"] += obj.displaysConnected; // Count offline displays (1 day)
+          } else if (obj.status === "offline (1+ hour)") {
+            result[1]["Offline (1+ hour)"] += 1;
+            result[1]["Displays-Offline (1+ hour)"] += obj.displaysConnected; // Count offline displays (1+ hour)
+          } else if (obj.status === "offline (1+ day)") {
+            result[1]["Offline (1+ day)"] += 1;
+            result[1]["Displays-Offline (1+ day)"] += obj.displaysConnected; // Count offline displays (1+ day)
           }
         } else if (obj.displayAspectRatio === "1920x540") {
           result[2].Signage += 1;
@@ -144,12 +156,12 @@ export async function GET() {
           if (obj.status === "online") {
             result[2].Online += 1;
             result[2]["Displays-Online"] += obj.displaysConnected; // Count online displays
-          } else if (obj.status === "offline (1 hour)") {
-            result[2]["Offline (1 hour)"] += 1;
-            result[2]["Displays-Offline (1 hour)"] += obj.displaysConnected; // Count offline displays (1-7 day)
-          } else if (obj.status === "offline (1 day)") {
-            result[2]["Offline (1 day)"] += 1;
-            result[2]["Displays-Offline (1 day)"] += obj.displaysConnected; // Count offline displays (1 day)
+          } else if (obj.status === "offline (1+ hour)") {
+            result[2]["Offline (1+ hour)"] += 1;
+            result[2]["Displays-Offline (1+ hour)"] += obj.displaysConnected; // Count offline displays (1+ hour)
+          } else if (obj.status === "offline (1+ day)") {
+            result[2]["Offline (1+ day)"] += 1;
+            result[2]["Displays-Offline (1+ day)"] += obj.displaysConnected; // Count offline displays (1+ day)
           }
         } else {
           result[3].Unknown += 1;
@@ -158,12 +170,12 @@ export async function GET() {
           if (obj.status === "online") {
             result[3].Online += 1;
             result[3]["Displays-Online"] += obj.displaysConnected; // Count online displays
-          } else if (obj.status === "offline (1 hour)") {
-            result[3]["Offline (1 hour)"] += 1;
-            result[3]["Displays-Offline (1 hour)"] += obj.displaysConnected; // Count offline displays (1-7 day)
-          } else if (obj.status === "offline (1 day)") {
-            result[3]["Offline (1 day)"] += 1;
-            result[3]["Displays-Offline (1 day)"] += obj.displaysConnected; // Count offline displays (1 day)
+          } else if (obj.status === "offline (1+ hour)") {
+            result[3]["Offline (1+ hour)"] += 1;
+            result[3]["Displays-Offline (1+ hour)"] += obj.displaysConnected; // Count offline displays (1+ hour)
+          } else if (obj.status === "offline (1+ day)") {
+            result[3]["Offline (1+ day)"] += 1;
+            result[3]["Displays-Offline (1+ day)"] += obj.displaysConnected; // Count offline displays (1+ day)
           }
         }
       });
@@ -171,14 +183,61 @@ export async function GET() {
       // Add Store count by the size of the storeCodes set
       result.forEach((item) => {
         item.Store = item.storeCodes.size;
-        delete item.storeCodes; // Remove the storeCodes field from the result
       });
 
-      return result;
+      // Calculate total summary
+      const allStoreCodes = new Set([
+        ...result[0].storeCodes,
+        ...result[1].storeCodes,
+        ...result[2].storeCodes,
+        ...result[3].storeCodes,
+      ]);
+
+      // Set the "Total Store" count to the size of the merged unique storeCodes set
+      totalSummary["Total Store"] = allStoreCodes.size;
+
+      totalSummary.Displays = result.reduce(
+        (acc, category) => acc + category.Displays,
+        0
+      );
+      totalSummary["Displays-Online"] = result.reduce(
+        (acc, category) => acc + category["Displays-Online"],
+        0
+      );
+      totalSummary["Displays-Offline (1+ hour)"] = result.reduce(
+        (acc, category) => acc + category["Displays-Offline (1+ hour)"],
+        0
+      );
+      totalSummary["Displays-Offline (1+ day)"] = result.reduce(
+        (acc, category) => acc + category["Displays-Offline (1+ day)"],
+        0
+      );
+      // Sum TV, Kiosk, and Signage for "TV boxes"
+      totalSummary["TV boxes"] =
+        result[0].TV + result[1].Kiosk + result[2].Signage;
+
+      totalSummary["TV boxes-Online"] = result.reduce(
+        (acc, category) => acc + category["Online"],
+        0
+      );
+      totalSummary["TV boxes-Offline (1+ hour)"] = result.reduce(
+        (acc, category) => acc + category["Offline (1+ hour)"],
+        0
+      );
+      totalSummary["TV boxes-Offline (1+ day)"] = result.reduce(
+        (acc, category) => acc + category["Offline (1+ day)"],
+        0
+      );
+
+      return { result, totalSummary };
     };
 
-    const result = summary(normalizeData);
-    return new Response(JSON.stringify(result), {
+    const { result, totalSummary } = summary(normalizeData);
+
+    // Merge the result and totalSummary into a single response
+    const response2 = [...result, totalSummary];
+
+    return new Response(JSON.stringify(response2), {
       status: 200,
       headers: {
         "Content-Type": "application/json",

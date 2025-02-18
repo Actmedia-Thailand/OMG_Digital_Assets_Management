@@ -1,291 +1,268 @@
-// app/chart2/page.js
+// /chart2/page.js
 "use client";
 
-import { useState, useEffect } from "react";
+import React from "react";
 import {
-  Container,
-  Grid,
+  Box,
   Paper,
   Typography,
-  Box,
+  Grid,
+  Container,
   AppBar,
   Toolbar,
-  Card,
-  CardContent,
   ThemeProvider,
   createTheme,
-  CssBaseline,
+  Stack,
 } from "@mui/material";
 
-// Create a theme with your color palette
-const theme = createTheme({
+// Custom theme to match the dark interface
+const darkTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#333",
+      main: "#2c2c2c",
     },
     secondary: {
-      main: "#f50057",
-    },
-    online: {
-      main: "#009688",
-      contrastText: "#fff",
-    },
-    offline: {
-      main: "#f44336",
-      contrastText: "#fff",
+      main: "#1e88e5",
     },
     background: {
-      default: "#222",
-      paper: "#333",
+      default: "#121212",
+      paper: "#1e1e1e",
     },
+  },
+  typography: {
+    fontFamily: "Roboto, Arial, sans-serif",
   },
 });
 
-export default function Dashboard() {
-  const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentDate, setCurrentDate] = useState("");
+// Network status data
+const networkData = [
+  {
+    title: "TV signage",
+    stores: 33,
+    displays: 836,
+    displayStatus: {
+      online: 836,
+      offlineHour: 0,
+      offlineDay: 0,
+    },
+    tvBoxes: 62,
+    tvBoxStatus: {
+      online: 59,
+      offlineHour: 0,
+      offlineDay: 3,
+    },
+  },
+  {
+    title: "Category signage",
+    stores: 67,
+    displays: 580,
+    displayStatus: {
+      online: 556,
+      offlineHour: 6,
+      offlineDay: 18,
+    },
+    tvBoxes: 161,
+    tvBoxStatus: {
+      online: 153,
+      offlineHour: 2,
+      offlineDay: 6,
+    },
+  },
+  {
+    title: "Kiosks",
+    stores: 35,
+    displays: 35,
+    displayStatus: {
+      online: 30,
+      offlineHour: 2,
+      offlineDay: 3,
+    },
+    tvBoxes: 35,
+    tvBoxStatus: {
+      online: 30,
+      offlineHour: 2,
+      offlineDay: 3,
+    },
+  },
+  {
+    title: "Big C - Total",
+    stores: 71,
+    displays: 1451,
+    displayStatus: {
+      online: 1422,
+      offlineHour: 8,
+      offlineDay: 21,
+    },
+    tvBoxes: 258,
+    tvBoxStatus: {
+      online: 242,
+      offlineHour: 4,
+      offlineDay: 12,
+    },
+  },
+];
 
-  useEffect(() => {
-    // Process your data
-    const fetchData = () => {
-      const rawData = [
-        {
-          TV: 62,
-          Online: 59,
-          "Offline (1-7 day)": 1,
-          "Offline (7+ day)": 2,
-          Displays: 836,
-          Store: 33,
-        },
-        {
-          Kiosk: 35,
-          Online: 31,
-          "Offline (1-7 day)": 4,
-          "Offline (7+ day)": 0,
-          Displays: 35,
-          Store: 35,
-        },
-        {
-          Signage: 161,
-          Online: 154,
-          "Offline (1-7 day)": 7,
-          "Offline (7+ day)": 0,
-          Displays: 580,
-          Store: 67,
-        },
-        {
-          Unknown: 0,
-          Online: 0,
-          "Offline (1-7 day)": 0,
-          "Offline (7+ day)": 0,
-          Displays: 0,
-          Store: 0,
-        },
-      ];
-
-      // Transform the data for the dashboard
-      const processedData = processData(rawData);
-      setData(processedData);
-      setIsLoading(false);
-    };
-
-    fetchData();
-
-    // Set current date and time
-    const date = new Date();
-    const formattedDate = `${date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    })}, ${date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    })}`;
-    setCurrentDate(formattedDate);
-  }, []);
-
-  const processData = (apiData) => {
-    if (!apiData || !Array.isArray(apiData)) return [];
-
-    // Create TV signage data
-    const tvSignage = {
-      category: "TV signage",
-      stores: apiData[0].Store || 0,
-      displays: apiData[0].Displays || 0,
-      online: apiData[0].Online || 0,
-      offline:
-        (apiData[0]["Offline (1-7 day)"] || 0) +
-        (apiData[0]["Offline (7+ day)"] || 0),
-      tvBoxes: apiData[0].TV || 0,
-    };
-
-    // Create Kiosks data
-    const kiosks = {
-      category: "Kiosks",
-      stores: apiData[1].Store || 0,
-      displays: 0, // No displays for kiosks
-      online: apiData[1].Online || 0,
-      offline:
-        (apiData[1]["Offline (1-7 day)"] || 0) +
-        (apiData[1]["Offline (7+ day)"] || 0),
-      tvBoxes: apiData[1].Kiosk || 0,
-      kiosks: apiData[1].Kiosk || 0,
-    };
-
-    // Create Category signage data
-    const categorySignage = {
-      category: "Category signage",
-      stores: apiData[2].Store || 0,
-      displays: apiData[2].Displays || 0,
-      online: apiData[2].Online || 0,
-      offline:
-        (apiData[2]["Offline (1-7 day)"] || 0) +
-        (apiData[2]["Offline (7+ day)"] || 0),
-      tvBoxes: apiData[2].Signage || 0,
-    };
-
-    // Calculate totals
-    const totalData = {
-      category: "Big C - Total",
-      stores: Math.max(tvSignage.stores, kiosks.stores, categorySignage.stores),
-      displays: tvSignage.displays + categorySignage.displays,
-      online: tvSignage.online + kiosks.online + categorySignage.online,
-      offline: tvSignage.offline + kiosks.offline + categorySignage.offline,
-      tvBoxes: tvSignage.tvBoxes + kiosks.tvBoxes + categorySignage.tvBoxes,
-    };
-
-    return [tvSignage, categorySignage, kiosks, totalData];
-  };
-
-  const StatCard = ({ label, value, subStats }) => (
-    <Paper
-      sx={{
-        p: 2,
-        mb: 2,
-        bgcolor: "#424242",
-        color: "white",
-        borderRadius: 1,
-      }}
-    >
-      <Typography
-        variant="subtitle1"
-        component="div"
-        sx={{ mb: 1, color: "rgba(255,255,255,0.8)" }}
-      >
-        {label}
-      </Typography>
-      <Typography
-        variant="h2"
-        component="div"
-        sx={{ mb: 1, fontWeight: "light" }}
-      >
-        {value}
-      </Typography>
-      {subStats && (
-        <Box sx={{ display: "flex", width: "100%" }}>
-          <Box
-            sx={{
-              bgcolor: theme.palette.online.main,
-              flex: 1,
-              py: 1,
-              px: 2,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "column",
-            }}
-          >
-            <Typography variant="body2">Online</Typography>
-            <Typography variant="h6">{subStats.online}</Typography>
-          </Box>
-          <Box
-            sx={{
-              bgcolor: theme.palette.offline.main,
-              flex: 1,
-              py: 1,
-              px: 2,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "column",
-            }}
-          >
-            <Typography variant="body2">Offline</Typography>
-            <Typography variant="h6">{subStats.offline}</Typography>
-          </Box>
-        </Box>
-      )}
-    </Paper>
-  );
-
-  const CategorySection = ({ data }) => (
-    <Grid item xs={12} md={6} lg={3}>
-      <Card sx={{ bgcolor: "#333", color: "white", height: "100%" }}>
-        <CardContent>
-          <Typography variant="h5" component="div" sx={{ mb: 2 }}>
-            {data.category}
-          </Typography>
-
-          <StatCard label="Stores" value={data.stores} />
-
-          {data.category === "Kiosks" ? (
-            <StatCard
-              label="Kiosks"
-              value={data.kiosks}
-              subStats={{ online: data.online, offline: data.offline }}
-            />
-          ) : (
-            <StatCard
-              label="Displays"
-              value={data.displays}
-              subStats={{ online: data.online, offline: data.offline }}
-            />
-          )}
-
-          <StatCard label="TV boxes" value={data.tvBoxes} />
-        </CardContent>
-      </Card>
-    </Grid>
-  );
-
-  if (isLoading) {
-    return <Typography>Loading...</Typography>;
-  }
+// Status Card Component
+const StatusCard = ({ label, value, statusData }) => {
+  const { online, offlineHour, offlineDay } = statusData || {};
+  const totalOffline = (offlineHour || 0) + (offlineDay || 0);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box
-        sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+    <Box sx={{ mb: 3 }}>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+        {label}
+      </Typography>
+      <Paper
+        elevation={0}
+        sx={{
+          bgcolor: "rgba(0,0,0,0.4)",
+          p: 2,
+          borderRadius: 1,
+          textAlign: "center",
+        }}
       >
+        <Typography variant="h2" component="div" sx={{ fontWeight: "light" }}>
+          {value}
+        </Typography>
+      </Paper>
+
+      {statusData && (
+        <Stack direction="row" spacing={0} sx={{ mt: 1 }}>
+          <Box
+            sx={{
+              bgcolor: "#008080",
+              flex: 1,
+              p: 1,
+              textAlign: "center",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Typography variant="body2" sx={{ color: "white" }}>
+              Online
+            </Typography>
+            <Typography variant="h5" sx={{ color: "white" }}>
+              {online}
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              bgcolor: "#FF6347",
+              flex: 1,
+              p: 1,
+              textAlign: "center",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Typography variant="body2" sx={{ color: "white" }}>
+              Offline 
+            </Typography>
+            <Typography variant="body2" sx={{ color: "white" }}>
+              (1+ hour)
+            </Typography>
+            <Typography variant="h5" sx={{ color: "white" }}>
+              {offlineHour || 0}
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              bgcolor: "#DC143C",
+              flex: 1,
+              p: 1,
+              textAlign: "center",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Typography variant="body2" sx={{ color: "white" }}>
+              Offline 
+            </Typography>
+            <Typography variant="body2" sx={{ color: "white" }}>
+               (1+ day)
+            </Typography>
+            <Typography variant="h5" sx={{ color: "white" }}>
+              {offlineDay || 0}
+            </Typography>
+          </Box>
+        </Stack>
+      )}
+    </Box>
+  );
+};
+
+// Section Component
+const StatusSection = ({ data }) => {
+  return (
+    <Paper
+      elevation={3}
+      sx={{
+        p: 3,
+        borderRadius: 2,
+        bgcolor: "rgba(255,255,255,0.05)",
+        height: "100%",
+      }}
+    >
+      <Typography variant="h5" component="h2" gutterBottom>
+        {data.title}
+      </Typography>
+
+      <StatusCard label="Stores" value={data.stores} />
+
+      <StatusCard
+        label="Displays"
+        value={data.displays}
+        statusData={data.displayStatus}
+      />
+
+      <StatusCard
+        label="TV boxes"
+        value={data.tvBoxes}
+        statusData={data.tvBoxStatus}
+      />
+    </Paper>
+  );
+};
+
+// Main Dashboard Component
+export default function NetworkStatus() {
+  return (
+    <ThemeProvider theme={darkTheme}>
+      <Box
+        sx={{
+          bgcolor: "background.default",
+          minHeight: "100vh",
+          color: "text.primary",
+        }}
+      >
+        {/* Header */}
         <AppBar position="static" color="primary" elevation={0}>
           <Toolbar>
-            <Box display="flex" alignItems="center">
+            <Box sx={{ display: "flex", alignItems: "center" }}>
               <Typography
-                variant="h6"
-                sx={{ mr: 1, fontWeight: "bold", color: "red" }}
+                variant="body1"
+                component="span"
+                sx={{ fontWeight: "bold", color: "#ff3d00" }}
               >
                 OMG!
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ color: "rgba(255,255,255,0.7)" }}
+                component="span"
+                sx={{ ml: 0.5, color: "#ff3d00" }}
               >
                 DIGITAL
               </Typography>
             </Box>
-            <Box sx={{ borderLeft: "1px solid #555", pl: 2, ml: 2 }}>
-              <Typography variant="h6">
+            <Box sx={{ ml: 2, display: "flex", alignItems: "center" }}>
+              <Typography variant="h6" component="div">
                 Big C Thailand - Network status
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{ color: "rgba(255,255,255,0.7)" }}
-              >
-                Last updated: {currentDate}
               </Typography>
             </Box>
             <Box sx={{ flexGrow: 1 }} />
@@ -293,20 +270,37 @@ export default function Dashboard() {
               component="img"
               src="/big-c-logo.png"
               alt="Big C Logo"
-              sx={{ height: 40 }}
+              sx={{
+                height: 40,
+                width: 40,
+                borderRadius: 1,
+              }}
             />
           </Toolbar>
         </AppBar>
 
-        <Box sx={{ bgcolor: "#222", flexGrow: 1, p: 3 }}>
-          <Container maxWidth="xl">
-            <Grid container spacing={3}>
-              {data.map((item, index) => (
-                <CategorySection key={index} data={item} />
-              ))}
-            </Grid>
-          </Container>
-        </Box>
+        {/* Main Content */}
+        <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+          <Grid container spacing={3}>
+            {networkData.map((section, index) => (
+              <Grid item xs={12} md={6} lg={3} key={index}>
+                <StatusSection data={section} />
+              </Grid>
+            ))}
+          </Grid>
+
+          {/* Footer Navigation */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              mt: 4,
+              color: "text.secondary",
+            }}
+          >
+          </Box>
+        </Container>
       </Box>
     </ThemeProvider>
   );
