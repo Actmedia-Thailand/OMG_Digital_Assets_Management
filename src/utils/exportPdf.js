@@ -6,8 +6,6 @@ export const exportPdf = (rows, columns) => {
   // สร้าง PDF เป็นแนวนอน
   const doc = new jsPDF({ orientation: "landscape" });
 
-
-
   // เพิ่มฟอนต์ที่ต้องการใช้
   doc.addFileToVFS("MyFont.ttf", font);
   doc.addFont("MyFont.ttf", "MyFont", "normal");
@@ -17,7 +15,8 @@ export const exportPdf = (rows, columns) => {
     (col) =>
       col.getIsVisible() &&
       col.id !== "mrt-row-select" &&
-      col.id !== "mrt-row-numbers"
+      col.id !== "mrt-row-numbers" &&
+      col.id !== "mrt-row-actions"
   );
 
   const tableHeaders = visibleColumns.map((col) => col.columnDef.header);

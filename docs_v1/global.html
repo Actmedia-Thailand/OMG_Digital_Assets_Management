@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Global - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="styles/prettify-tomorrow.css"
+    />
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css" />
+  </head>
+  <body>
+    <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+    <label for="nav-trigger" class="navicon-button x">
+      <div class="navicon"></div>
+    </label>
+
+    <label for="nav-trigger" class="overlay"></label>
+
+    <nav>
+      <li class="nav-link nav-home-link"><a href="index.html">Home</a></li>
+      <li class="nav-heading"><a href="global.html">Globals</a></li>
+      <li class="nav-item">
+        <span class="nav-item-type type-function">F</span
+        ><span class="nav-item-name"
+          ><a href="global.html#Login">Login</a></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-function">F</span
+        ><span class="nav-item-name"
+          ><a href="global.html#Permission">Permission</a></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-function">F</span
+        ><span class="nav-item-name"
+          ><a href="global.html#Profile">Profile</a></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-function">F</span
+        ><span class="nav-item-name"
+          ><a href="global.html#ProtectedRoute">ProtectedRoute</a></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-function">F</span
+        ><span class="nav-item-name"
+          ><a href="global.html#Register">Register</a></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-function">F</span
+        ><span class="nav-item-name"
+          ><a href="global.html#ViewManager">ViewManager</a></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-function">F</span
+        ><span class="nav-item-name"
+          ><a href="global.html#ViewManager">TEST EX.</a></span
+        >
+      </li>
+    </nav>
+
+    <div id="main">
+      <h1 class="page-title">Global</h1>
+
+      <section>
+        <header>
+          <h2></h2>
+        </header>
+
+        <article>
+          <div class="container-overview">
+            <dl class="details"></dl>
+          </div>
+
+          <h3 class="subsection-title">Methods</h3>
+
+          <div class="section-method">
+            <h4 class="name" id="Login">
+              <span class="type-signature"></span>Login<span class="signature"
+                >()</span
+              ><span class="type-signature"></span>
+            </h4>
+
+            <div class="description">Component for handling user login.</div>
+
+            <dl class="details">
+              <dt class="tag-source">Source:</dt>
+              <dd class="tag-source">
+                <ul class="dummy">
+                  <li>
+                    <a href="app_page.js.html">app/page.js</a>,
+                    <a href="app_page.js.html#line19">line 19</a>
+                  </li>
+                </ul>
+              </dd>
+            </dl>
+          </div>
+
+          <div class="section-method">
+            <h4 class="name" id="Permission">
+              <span class="type-signature"></span>Permission<span
+                class="signature"
+                >(mimetype, data)</span
+              ><span class="type-signature"> &rarr; {JSX.Element}</span>
+            </h4>
+
+            <div class="description">
+              Permission component for managing user permissions.
+            </div>
+
+            <dl class="details">
+              <dt class="tag-source">Source:</dt>
+              <dd class="tag-source">
+                <ul class="dummy">
+                  <li>
+                    <a href="app_permission_page.js.html"
+                      >app/permission/page.js</a
+                    >, <a href="app_permission_page.js.html#line34">line 34</a>
+                  </li>
+                </ul>
+              </dd>
+            </dl>
+
+            <h5>Parameters:</h5>
+
+            <table class="params">
+              <thead>
+                <tr>
+                  <th>Name</th>
+
+                  <th>Type</th>
+
+                  <th class="last">Description</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td class="name"><code>mimetype</code></td>
+
+                  <td class="type">
+                    <span class="param-type"><code>string</code></span>
+                  </td>
+
+                  <td class="description last">Body mimetype.</td>
+                </tr>
+
+                <tr>
+                  <td class="name"><code>data</code></td>
+
+                  <td class="type">
+                    <span class="param-type"><code>Object</code></span>
+                  </td>
+
+                  <td class="description last">Data to be marshalled.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="section-returns">
+              <h5>Returns:</h5>
+
+              <dl class="param-type">
+                <dt>Type:</dt>
+                <dd>
+                  <span class="param-type"><code>JSX.Element</code></span>
+                </dd>
+              </dl>
+
+              <div class="param-desc">The rendered component.</div>
+            </div>
+
+            <div class="section-examples">
+              <h5>Example</h5>
+
+              <pre
+                class="prettyprint"
+              ><code>// Example usage of the Permission component
+const mimetype = "application/json";
+const data = {
+    userId: 1,
+    permissions: ["read", "write"]
+};
+
+&lt;Permission mimetype={mimetype} data={data} /></code></pre>
+            </div>
+          </div>
+
+          <div class="section-method">
+            <h4 class="name" id="Profile">
+              <span class="type-signature"></span>Profile<span class="signature"
+                >()</span
+              ><span class="type-signature"> &rarr; {JSX.Element}</span>
+            </h4>
+
+            <div class="description">
+              Profile component for managing user profile information.
+            </div>
+
+            <dl class="details">
+              <dt class="tag-source">Source:</dt>
+              <dd class="tag-source">
+                <ul class="dummy">
+                  <li>
+                    <a href="app_profile_page.js.html">app/profile/page.js</a>,
+                    <a href="app_profile_page.js.html#line24">line 24</a>
+                  </li>
+                </ul>
+              </dd>
+            </dl>
+
+            <div class="section-returns">
+              <h5>Returns:</h5>
+
+              <dl class="param-type">
+                <dt>Type:</dt>
+                <dd>
+                  <span class="param-type"><code>JSX.Element</code></span>
+                </dd>
+              </dl>
+
+              <div class="param-desc">The rendered component.</div>
+            </div>
+          </div>
+
+          <div class="section-method">
+            <h4 class="name" id="ProtectedRoute">
+              <span class="type-signature"></span>ProtectedRoute<span
+                class="signature"
+                >()</span
+              ><span class="type-signature"> &rarr; {JSX.Element}</span>
+            </h4>
+
+            <div class="description">
+              ProtectedRoute component for managing user profile information.
+            </div>
+
+            <dl class="details">
+              <dt class="tag-source">Source:</dt>
+              <dd class="tag-source">
+                <ul class="dummy">
+                  <li>
+                    <a href="components_protectedRoute.js.html"
+                      >components/protectedRoute.js</a
+                    >,
+                    <a href="components_protectedRoute.js.html#line12"
+                      >line 12</a
+                    >
+                  </li>
+                </ul>
+              </dd>
+            </dl>
+
+            <div class="section-returns">
+              <h5>Returns:</h5>
+
+              <dl class="param-type">
+                <dt>Type:</dt>
+                <dd>
+                  <span class="param-type"><code>JSX.Element</code></span>
+                </dd>
+              </dl>
+
+              <div class="param-desc">The rendered component.</div>
+            </div>
+          </div>
+
+          <div class="section-method">
+            <h4 class="name" id="Register">
+              <span class="type-signature"></span>Register<span
+                class="signature"
+                >()</span
+              ><span class="type-signature"> &rarr; {JSX.Element}</span>
+            </h4>
+
+            <div class="description">
+              Register component for managing user profile information.
+            </div>
+
+            <dl class="details">
+              <dt class="tag-source">Source:</dt>
+              <dd class="tag-source">
+                <ul class="dummy">
+                  <li>
+                    <a href="app_register_page.js.html">app/register/page.js</a
+                    >, <a href="app_register_page.js.html#line19">line 19</a>
+                  </li>
+                </ul>
+              </dd>
+            </dl>
+
+            <div class="section-returns">
+              <h5>Returns:</h5>
+
+              <dl class="param-type">
+                <dt>Type:</dt>
+                <dd>
+                  <span class="param-type"><code>JSX.Element</code></span>
+                </dd>
+              </dl>
+
+              <div class="param-desc">The rendered component.</div>
+            </div>
+          </div>
+
+          <div class="section-method">
+            <h4 class="name" id="ViewManager">
+              <span class="type-signature"></span>ViewManager<span
+                class="signature"
+                >()</span
+              ><span class="type-signature"> &rarr; {JSX.Element}</span>
+            </h4>
+
+            <div class="description">
+              ViewManager component for managing user profile information.
+            </div>
+
+            <dl class="details">
+              <dt class="tag-source">Source:</dt>
+              <dd class="tag-source">
+                <ul class="dummy">
+                  <li>
+                    <a href="components_viewmanager.js.html"
+                      >components/viewmanager.js</a
+                    >,
+                    <a href="components_viewmanager.js.html#line11">line 11</a>
+                  </li>
+                </ul>
+              </dd>
+            </dl>
+
+            <div class="section-returns">
+              <h5>Returns:</h5>
+
+              <dl class="param-type">
+                <dt>Type:</dt>
+                <dd>
+                  <span class="param-type"><code>JSX.Element</code></span>
+                </dd>
+              </dl>
+
+              <div class="param-desc">The rendered component.</div>
+            </div>
+          </div>
+        </article>
+      </section>
+    </div>
+
+    <br class="clear" />
+
+    <footer>
+      Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on
+      Thu Jan 09 2025 17:46:11 GMT+0700 (Indochina Time) using the Minami theme.
+    </footer>
+
+    <script>
+      prettyPrint();
+    </script>
+    <script src="scripts/linenumber.js"></script>
+  </body>
+</html>

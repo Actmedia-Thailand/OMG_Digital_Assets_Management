@@ -1,0 +1,134 @@
+/* === Box Icon Head (Icon ในเมนู) === */
+.boxIconHead {
+  width: 32px;
+  height: 32px;
+  background: #fff; /* พื้นหลังสีขาว */
+  text-align: center;
+  border-radius: 50%; /* ให้เป็นทรงกลม */
+}
+
+/* === Navbar Links Styles === */
+.navbar-nav {
+  display: flex;
+  flex-wrap: nowrap; /* ไม่ให้เมนูตัดบรรทัด */
+  overflow-x: auto; /* ให้สามารถเลื่อนในแนวนอนได้ */
+  white-space: nowrap; /* ป้องกันการตัดคำในเมนู */
+}
+
+.navbar-nav .nav-item {
+  margin-right: 10px; /* ระยะห่างระหว่างเมนู */
+}
+
+.navbar-nav .nav-item:last-child {
+  margin-right: 0; /* ลบระยะห่างสำหรับเมนูสุดท้าย */
+}
+
+.navbar-nav .nav-link {
+  position: relative;
+  color: #000; /* สีข้อความปกติ */
+  font-weight: 500; /* น้ำหนักข้อความ */
+  padding: 10px 15px; /* ระยะห่างภายใน */
+  border-radius: 5px 5px 0 0; /* มุมมนเฉพาะด้านบน */
+  text-align: center; /* จัดกึ่งกลางข้อความ */
+  transition: color 0.3s ease, background-color 0.3s ease; /* การเปลี่ยนสีลื่นไหล */
+  flex: 0 0 auto; /* ให้เมนูแต่ละตัวมีขนาดเท่ากัน */
+}
+
+/* เมื่อ Hover */
+.navbar-nav .nav-link:hover {
+  color: #fff; /* เปลี่ยนสีข้อความเมื่อชี้เมาส์ */
+  background-color: #118DCE; /* เปลี่ยนพื้นหลังเมื่อชี้เมาส์ */
+  text-decoration: none; /* เอาเส้นใต้ลิงก์ออก */
+}
+
+/* === Underline Animation Effect on Hover === */
+.navbar-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background-color: #767676; /* สีเส้นขีดล่าง */
+  transition: width 0.3s ease; /* การเคลื่อนไหวของเส้น */
+}
+
+.navbar-nav .nav-link:hover::after {
+  width: 100%; /* ขยายความกว้างของเส้นเมื่อ Hover */
+}
+
+.fixed-top {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* === Active Link === */
+.navbar-nav .nav-link.active {
+  color: #fff !important; /* สีข้อความของลิงก์ที่ active */
+  background-color: #118DCE; /* สีพื้นหลังลิงก์ที่ active */
+}
+
+.content-marginTop{
+  margin-top: 116px;
+}
+
+
+/* Dropdown styles ++++++ ส่วนชื่อ User ตอนกด dropdown  */
+.custom-dropdown {
+  display: block;
+  position: absolute;
+  top: 38px;
+  right: 0;
+  background-color: white;
+  box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+  border-radius: 5px;
+}
+
+.dropdown-user-info {
+  padding: 8px 16px;
+  margin-bottom: 0;
+  border-bottom: 1px solid #eee;
+  color: #6c757d;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropdown-user-info i {
+  font-size: 16px;
+}
+
+/* === เพิ่มความยืดหยุ่นสำหรับหน้าจอขนาดเล็ก === */
+@media (max-width: 768px) {
+  .navbar-nav {
+      justify-content: start; /* จัดเมนูให้อยู่ชิดซ้าย */
+  }
+
+  .navbar-nav .nav-link {
+      padding: 8px 12px; /* ลดขนาด Padding สำหรับมือถือ */
+      font-size: 14px; /* ลดขนาดตัวอักษร */
+  }
+}
+
+
+/* มือถือแนวตั้ง */
+@media (max-width: 767px) and (orientation: portrait) {
+  .navbar-nav .nav-link{
+    margin-bottom: 7px;
+  }
+  .customJustifyTopHead{
+    justify-content: center !important;
+  }
+  .content-marginTop{
+    margin-top: 179px;
+  }
+}
+
+
+/* จอ ipad แนวตั้ง */
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation : portrait){
+  .navbar-nav .nav-link{
+    margin-bottom: 7px;
+  }
+
+}

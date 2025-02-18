@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>profile/page.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#Login">Login</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#Permission">Permission</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#Profile">Profile</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#Register">Register</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">profile/page.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use client";
+
+// pages/register.js
+import React from 'react';
+import { useState,useEffect} from "react";
+import Link from 'next/link';
+import styles from './profile.module.css';  // css module แยกตาม component
+import './profile.css';
+import Image from 'next/image';  // รูปแบบ Next ทำให้โหลดเร็ว
+// import { useRouter } from 'next/navigation'; // ใช้ next/navigation สำหรับ App Router
+import axios from "axios";  // ใช้เรียก api
+import Swal from 'sweetalert2'; // Import SweetAlert2
+
+// import Header from '@/components/header';
+import Footer from '@/components/footer';
+import Topbar from '@/components/topbar';
+import ProtectedRoute from '@/components/protectedRoute';
+import Loader2 from '@/components/loader2';
+
+/**
+ * Profile component for managing user profile information.
+ * @returns {JSX.Element} The rendered component.
+ */
+const Profile = () => {
+    // ใช้ useState เก็บข้อมูลจากฟอร์ม +++++++++++++++++++++++++++++++++++++
+    const [username, setUsername] = useState('');
+    // const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
+    const [nameSecond, setNameSecond] = useState('');
+    const [department, setDepartment] = useState('');
+    const [position, setPosition] = useState('');
+    const [level, setLevel] = useState('1');
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [resetPassError, setResetPassError] = useState('');
+    const [showModal, setShowModal] = useState(false); // ใช้ state ควบคุมการแสดง Modal
+    const [loading, setLoading] = useState(true); // สถานะสำหรับ Loading
+    // const router = useRouter(); //ใช้ redirect page
+    const [isEditable, setIsEditable] = useState(false); // ค่าเริ่มต้นคือ disabled
+    const [showPassword, setShowPassword] = useState(false); // สถานะการแสดงรหัสผ่าน
+    const [usernameCheck, setUsernameCheck] = useState(null);
+    const [errorProfileForm, setErrorProfileForm] = useState("");  // เตือน Error Profile Form 
+
+    // Department array data  ++++++++++++++++++++++++++++++++++++++++++++++++++
+    const departmentArr = [
+      { name: "Digital", positions: ["Software Engineer", "Web Developer", "UI/UX Designer", "Digital Strategist"] },
+      { name: "Media", positions: ["Content Creator", "Video Editor", "Social Media Manager"] },
+      { name: "Operations", positions: ["Operations Manager", "Project Coordinator", "Logistics Specialist"] },
+      { name: "Board", positions: ["CEO", "CFO", "COO"] },
+    ];
+
+    // ใช้ค้นหาข้อมูลใน array โดยจะส่งกลับค่า ตัวแรกที่ตรงเงื่อนไข ที่กำหนดใน callback function (หรือ undefined หากไม่พบ)
+    const selectedDepartment = departmentArr.find((dept) => dept.name === department);
+    console.log(selectedDepartment)
+
+
+    // ++++++++++++++ Submit  Reset password  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    /**
+     * Handles the reset password functionality.
+     * 
+     * This function validates the input fields for resetting the password, 
+     * constructs a request object, and sends it to the API to update the password.
+     * It also handles success and error responses from the API.
+     * 
+     * @param {Event} e - The event object from the form submission.
+     * @returns {void} - This function does not return a value.
+     * 
+     */
+    const handleResetPass = (e) => { 
+      e.preventDefault();
+
+      // Validation  Reset password Form  ****************************************
+      if (!oldPassword.trim() || !newPassword.trim() || !confirmPassword.trim()) { // ตรวจสอบว่าฟิลด์ทั้งหมดไม่ว่าง
+        setResetPassError('All fields are required!');
+      } else if (newPassword.length &lt; 6) {  // ตรวจสอบความยาวขั้นต่ำ 6
+        setResetPassError('New Password must be at least 6 characters long!');
+      } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(newPassword)) {   // ตรวจสอบพิมพ์เล็ก พิมพ์ใหญ่ และตัวเลข อย่างน้อยอย่างละ 1 ตัว
+        setResetPassError('New Password must contain at least one lowercase letter, one uppercase letter, and one number!');
+      } else if (newPassword.trim() !== confirmPassword.trim()) {  // ตรวจสอบว่ารหัสผ่านใหม่และยืนยันรหัสผ่านตรงกัน
+        setResetPassError('New Password and Confirm Password do not match!');
+      }else{
+        setResetPassError('');  // set ให้ Error เป็นค่าว่างถ้าผ่านทุกเงื่อนไข
+        setLoading(true); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+
+        //เก็บข้อมูลจาก Form รวมเป็น Object *********************************
+        const user_id = localStorage.getItem('user_id');  // Get user_id ที่เก็บใน localstorage
+        const ResetPassFormObj = { 
+          user_id: user_id,
+          old_password: oldPassword,
+          new_password: newPassword,
+        };
+    
+        // เรียก API ด้วย axios ****************************************
+        axios.post('http://127.0.0.1:8000/users/reset_password', ResetPassFormObj, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+
+        .then((response) => {
+          console.log(response);  // Debug
+          Swal.fire({
+            // icon: 'info', // ไอคอนคำถาม (หรือเปลี่ยนเป็นไอคอนอื่นตามต้องการ)
+            title: response.data.message,  //แสดงข้อความจาก api >> response.data.message
+            confirmButtonText: 'OK',
+            // showConfirmButton: false, // ปิดปุ่มยืนยัน
+            // timer: 3000, // ตั้งเวลาให้แสดงแค่ 3 วินาที (3000 ms)
+            // timerProgressBar: true, // เพิ่มแถบโปรเกรสให้ดูว่าเหลือเวลาเท่าไหร่
+            customClass: {
+              popup: 'modern-swal-popup', // ปรับแต่งกล่องแจ้งเตือน
+              title: 'modern-swal-title', // ปรับแต่งหัวข้อ
+              confirmButton: 'modern-swal-button', // ปรับแต่งปุ่มยืนยัน
+            },
+          });
+          setOldPassword(''); //set ค่าว่าง
+          setNewPassword('');  //set ค่าว่าง
+          setConfirmPassword('');  //set ค่าว่าง
+          setShowModal(false); // ปิด Modal เปลี่ยนรหัสผ่าน
+          setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+          
+        })
+        .catch((error) => {
+          console.error("Password update  failed:", error); 
+          // Alert เตือนเมื่อเกิดข้อผิดพลาดในการ Register เช่น Username ซ้ำ
+          Swal.fire({  // Library alert warning
+            icon: 'warning', // Warning icon
+            title: error.response.data.detail,
+            confirmButtonText: 'OK', // Confirmation button
+            customClass: {
+              title: 'swal2-title',
+              content: 'swal2-content',
+              confirmButton: 'swal2-confirm',
+            },
+          });
+          setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+        });
+      }
+      
+    };
+
+
+    // ++++++++++++++ Close ResetPassForm +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    /**
+     * Closes the reset password modal and resets the form fields.
+     * 
+     * This function sets the modal visibility to false and clears the input fields 
+     * for old password, new password, and confirm password.
+     * 
+     * @returns {void} - This function does not return a value.
+     * 
+     */
+    const closeResetPassForm = () => {
+      setShowModal(false)
+      setOldPassword(''); //set ค่าว่าง
+      setNewPassword('');  //set ค่าว่าง
+      setConfirmPassword('');  //set ค่าว่าง
+      setResetPassError('')   //set ค่าว่าง
+    }
+    
+    // ทำงานแค่ครั้งเดียวเมื่อคอมโพเนนต์โหลด   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    useEffect(() => {
+
+        // ตรวจสอบว่าโค้ดกำลังรันใน Client-side ************************
+        if (typeof window !== "undefined") {
+          const username = localStorage.getItem("username");
+          setUsernameCheck(username);
+        }
+
+        // +++++++++++   Get Api Data >> USER table ++++++++++++++++++++++++++++++++++++++++++
+        const user_id = localStorage.getItem('user_id');  // Get user_id ที่เก็บใน localstorage
+        axios.get(`http://127.0.0.1:8000/users/${user_id}`)
+        .then((response) => {
+          console.log(response.data); //   ******* ข้อมูลจะอยู่ใน `response.data` ********
+          setUsername(response.data.username); //เก็บข้อมูลจาก api เก็บลง UseState
+          setName(response.data.name);  //เก็บข้อมูลจาก api เก็บลง UseState
+          setNameSecond(response.data.name);  //เก็บข้อมูลจาก api เก็บลง UseState
+          setDepartment(response.data.department);  //เก็บข้อมูลจาก api เก็บลง UseState
+          setPosition(response.data.position);  //เก็บข้อมูลจาก api เก็บลง UseState
+          setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+        })
+        .catch((error) => {
+          console.error(error); // จัดการข้อผิดพลาด
+          // router.push("/"); // ถ้าไม่มี Token ให้ Redirect ไปหน้า Login
+          setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+        });
+    }, []);  // [] หมายความว่า useEffect จะทำงานแค่ครั้งเดียวเมื่อคอมโพเนนต์โหลด
+
+    //EDIT PROFILE FORM เมื่อ click save change button +-+-+-+-+-+-+-+-+-+-+-+--++--+-++-+-
+    /**
+     * Handles the save changes functionality for the profile.
+     * 
+     * This function validates the profile form fields and sends the updated 
+     * profile information to the API. It also handles success and error responses.
+     * 
+     * @param {Event} e - The event object from the form submission.
+     * @returns {void} - This function does not return a value.
+     * 
+     */
+    const handleSaveChange = (e) => {
+        e.preventDefault();
+
+        // Validate ข้อมูลก่อนเรียก API
+        if (!username.trim() || !name.trim() || !department.trim() || !position.trim()) {
+          setErrorProfileForm('All fields are required.')
+          return; // หยุดการทำงานถ้าข้อมูลไม่ครบ
+        }else{
+          setErrorProfileForm('')
+          window.location.reload(); // reload หน้า หลังกด Save change
+        }
+
+
+        //เก็บข้อมูลจาก Form รวมเป็น Object
+        const ProfileFormObj = { 
+        username: username,
+        name: name,
+        department: department,
+        position: position,
+        level: Number(level)
+        };
+
+
+        // เรียก API ด้วย axios ++++++++++++++++++++++++++++++++++++++++++++++
+        const user_id = localStorage.getItem('user_id');  // Get user_id ที่เก็บใน localstorage
+        axios.put(`http://127.0.0.1:8000/users/${user_id}`, ProfileFormObj, {
+          headers: {
+              'Content-Type': 'application/json'
+          }
+        })
+
+        .then((response) => {
+        console.log("Edit Profile successful:", response.data);
+
+        })
+        .catch((error) => {
+        console.error("Edit Profile failed:", error.response.data.detail);
+
+          // Alert เตือนเมื่อเกิดข้อผิดพลาดในการ Edit Profile เช่น  Not found user
+          Swal.fire({  // Library alert warning
+              icon: 'warning', // Warning icon
+              title: error.response.data.detail,
+              confirmButtonText: 'OK', // Confirmation button
+              customClass: {
+              title: 'swal2-title',
+              content: 'swal2-content',
+              confirmButton: 'swal2-confirm',
+              },
+          });
+        });
+    };
+
+    // Click เปิด enable profile form +++++++++++++++++
+    /**
+     * Enables the profile form for editing.
+     * 
+     * This function sets the editable state to true, allowing the user to modify 
+     * their profile information.
+     * 
+     * @returns {void} - This function does not return a value.
+     * 
+     */
+    const handleEdit = () => {
+      setIsEditable(true); // เปิดให้แก้ไข
+    };
+
+    // แสดง Loading ระหว่างโหลด
+    if (loading) {
+      return &lt;div>&lt;Loader2/>&lt;/div>;
+    }
+
+
+  return (
+    &lt;>
+    &lt;ProtectedRoute>
+    &lt;Topbar fixedTop="fixed-top"/>
+    &lt;div className="d-flex align-items-center justify-content-center min-vh-100 bg-light py-5 mt-5">
+      &lt;div className="card p-4" style={{ width: '400px' }}>
+        &lt;div className="text-center mb-4">
+        &lt;div className={`rounded-circle mx-auto d-flex align-items-center ${styles.boxLogoRegister}`} style={{ width: '130px', height: '130px'}}>
+              &lt;Image 
+                src="/logo-actmedia-header.png" 
+                alt="Logo Actmedia Thailand"
+                className="img-fluid p-2" 
+                width={500} 
+                height={300}
+                layout="responsive" // ใช้ layout แบบ responsive
+                priority // ใช้ priority เพื่อ preload ภาพ
+              />
+          &lt;/div>
+          &lt;div className='profile-head d-flex justify-content-between align-items-center pt-4'>
+            &lt;h4 className="name_user mb-0">{nameSecond}&lt;/h4>  
+            &lt;button 
+              className={`btn btn-sm custom-btn ${styles.customBtn}`} // ใช้ Bootstrap class สำหรับปุ่ม
+              onClick={() => handleEdit()} // เพิ่มฟังก์ชัน handleEdit
+            >
+              &lt;i className="bi bi-pencil-square">&lt;/i> Edit
+            &lt;/button>
+          &lt;/div>
+        &lt;/div>
+
+        &lt;form onSubmit={handleSaveChange}>
+          &lt;div className="mb-3">
+            &lt;label htmlFor="username" className="form-label">Username&lt;/label>
+            &lt;input 
+              type="text" 
+              id="username" 
+              className="form-control rounded-pill" 
+              placeholder="username" 
+              value={username} 
+              disabled={true} // ควบคุม disabled ด้วย state
+              onChange={(e) => setUsername(e.target.value)} // อัปเดตค่าของ username
+              required 
+            />
+          &lt;/div>
+
+          &lt;div className="mb-3">
+            &lt;label htmlFor="name" className="form-label">Name&lt;/label>
+            &lt;input 
+              type="text" 
+              id="name" 
+              className="form-control rounded-pill" 
+              placeholder="name" 
+              value={name} 
+              disabled={!isEditable} // ควบคุม disabled ด้วย state
+              onChange={(e) => setName(e.target.value)} // อัปเดตค่าของ name
+            />
+          &lt;/div>
+
+          {/* ********* Department options *********** */}
+          &lt;div className="mb-3">
+              &lt;label htmlFor="department" className="form-label">Department&lt;/label>
+              &lt;select
+                id="department"
+                className="form-control rounded-pill"
+                value={department}
+                disabled={!isEditable} // ควบคุม disabled ด้วย state
+                onChange={(e) => {
+                  setDepartment(e.target.value); // อัปเดต department ที่เลือก
+                  setPosition(""); // รีเซ็ต position เมื่อเปลี่ยน department
+                }}
+              >
+                {/* &lt;option value="">-- Select Department --&lt;/option> */}
+                {departmentArr.map((dept) => (
+                  &lt;option key={dept.name} value={dept.name}>
+                    {dept.name}
+                  &lt;/option>
+                ))}
+              &lt;/select>
+          &lt;/div>
+
+          {/* *************** Position options ******************** */}
+          &lt;div className="mb-4">
+              &lt;label htmlFor="position" className="form-label">Position&lt;/label>
+              &lt;select
+                id="position"
+                className="form-control rounded-pill"
+                value={position}
+                onChange={(e) => setPosition(e.target.value)} // อัปเดตตำแหน่งงานที่เลือก
+                disabled={!isEditable} // ควบคุม disabled ด้วย state
+              >
+                {!position &amp;&amp; &lt;option value="">-- Select Position --&lt;/option>} {/* แสดงเฉพาะเมื่อ position เป็นค่าว่าง */}
+                {selectedDepartment &amp;&amp;
+                  selectedDepartment.positions.map((pos, index) => ( // Loop จาก  Positions Array
+                    &lt;option key={index} value={pos}>
+                      {pos}
+                    &lt;/option>
+                ))}
+              &lt;/select>
+          &lt;/div>
+
+          {/* ********* แสดงข้อความแจ้งเตือนเมื่อมีข้อผิดพลาด !!!  ************* */}
+          {errorProfileForm &amp;&amp; (
+            &lt;div className="alert alert-danger mb-3" role="alert">
+              {errorProfileForm}
+            &lt;/div>
+          )}
+
+          {/********* Save change button ********* */}
+          &lt;button type="submit"   className={`w-100 mb-2  ${styles.registerBtn}`}>Save change&lt;/button>  
+        &lt;/form>
+
+        {/* ปุ่มเปิด Modal ++++++++++++++++ */}
+        {!usernameCheck?.includes('@gmail') &amp;&amp; (
+          &lt;div className="change-password pb-2">
+            &lt;button className="btn btn-secondary w-100" onClick={() => setShowModal(true)}>
+              Change Password
+            &lt;/button>
+          &lt;/div> 
+        )}
+        &lt;Link href="/assets" className={`btn btn-light w-100  ${styles.backBtn}`} >Back&lt;/Link>
+
+        {/* Modal Change password ++++++++++++++++++++ */}
+        {showModal &amp;&amp; (
+          &lt;div className="modal d-block" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+            &lt;div className="modal-dialog modal-dialog-centered">
+              &lt;div className="modal-content">
+                &lt;div className="modal-header">
+                  &lt;h5 className="modal-title">Change Password&lt;/h5>
+                  &lt;button
+                    type="button"
+                    className="btn-close"
+                    onClick={() => closeResetPassForm()} // ปิด Modal
+                    aria-label="Close"
+                  >&lt;/button>
+                &lt;/div>
+                &lt;div className="modal-body p-4">
+              
+                  &lt;form onSubmit={handleResetPass}>
+                      &lt;span 
+                        className="position-absolute" 
+                        style={{ top: '7%', right: '20px', transform: 'translateY(-50%)', cursor: 'pointer',color:'#118DCE' }}
+                        onClick={() => setShowPassword(!showPassword)}  // สลับสถานะการแสดงรหัสผ่าน 
+                      >Show/Hide&amp;nbsp; 
+                          {/* ใช้ Bootstrap Icons */}
+                          {showPassword ? &lt;i className="bi bi-eye">&lt;/i> : &lt;i className="bi bi-eye-slash">&lt;/i>}
+                      &lt;/span>
+                    &lt;div className="mb-3">
+                      &lt;label htmlFor="currentPassword" className="form-label">
+                        Old Password
+                      &lt;/label>
+                      &lt;input
+                        type={showPassword ? 'text' : 'password'}  // เปลี่ยนเป็น text ถ้า showPassword เป็น true
+                        className="form-control"
+                        id="oldPassword"
+                        value={oldPassword}
+                        onChange={(e) => setOldPassword(e.target.value)}
+                      />
+                    &lt;/div>
+                    &lt;div className="mb-3">
+                      &lt;label htmlFor="newPassword" className="form-label">
+                        New Password
+                      &lt;/label>
+                      &lt;input
+                        type={showPassword ? 'text' : 'password'}  // เปลี่ยนเป็น text ถ้า showPassword เป็น true
+                        className="form-control"
+                        id="newPassword"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                      />
+                    &lt;/div>
+                    &lt;div className="mb-3">
+                      &lt;label htmlFor="confirmPassword" className="form-label">
+                        Confirm Password
+                      &lt;/label>
+                      &lt;input
+                        type={showPassword ? 'text' : 'password'}  // เปลี่ยนเป็น text ถ้า showPassword เป็น true
+                        className="form-control"
+                        id="confirmPassword"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                      />
+                    &lt;/div>
+                    {resetPassError &amp;&amp; (
+                    &lt;div className="alert alert-danger pb-3" role="alert">
+                      {resetPassError}
+                    &lt;/div>
+                    )}
+                    &lt;button type="submit" className="btn btn-secondary w-100">
+                      Save
+                    &lt;/button>
+                  &lt;/form>
+                  
+                &lt;/div>
+              &lt;/div>
+            &lt;/div>
+          &lt;/div>
+        )}
+
+      &lt;/div>
+    &lt;/div>
+    
+    &lt;Footer/>
+    &lt;/ProtectedRoute>
+    &lt;/>
+  );
+}
+
+export default Profile;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Thu Jan 09 2025 16:25:58 GMT+0700 (Indochina Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

@@ -331,7 +331,7 @@ const Table3 = ({ data, columns }) => {
             <Button onClick={handleCloseDialog}>Cancel</Button>
             <Button
               onClick={handleSaveFilteredIds}
-              disabled={!groupName.trim()}
+              disabled={!groupName.trim()}  
             >
               Save
             </Button>

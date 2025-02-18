@@ -5,7 +5,7 @@ import styles from "../styles/loader.module.scss";
 export default function Loading() {
 	const [loadingText, setLoadingText] = useState("Initializing");
 
-	useEffect(() => {
+	  useEffect(() => {
 		const texts = ["Act Media Thailand", "Loading"];
 		let currentIndex = 0;
 
