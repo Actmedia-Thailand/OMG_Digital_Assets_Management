@@ -2,21 +2,21 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
-const VIEW_URL = "http://127.0.0.1:8000/view"; // URL สำหรับ API view
+const VIEW_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/view`; // เปลี่ยน URL
 
-// ฟังก์ชันดึงข้อมูล (GET)
+// ฟังก์ชันดึงข้อมูล (GET) **************************
 export const useViews = () => {
   return useQuery({
     queryKey: ["views"],
     queryFn: async () => {
       const { data } = await axios.get(VIEW_URL);
-      console.log("Query All Views");
+      console.log("Query All Views",data);  // Debugging ข้อมูลที่ได้จาก API
       return data; // คืนค่าข้อมูลที่ได้จาก API
     },
   });
 };
 
-// ฟังก์ชันสร้างข้อมูลใหม่ (POST)
+// ฟังก์ชันสร้างข้อมูลใหม่ (POST) **************************
 export const useCreateView = () => {
   const queryClient = useQueryClient();
 
@@ -53,7 +53,7 @@ export const useCreateView = () => {
   });
 };
 
-// ฟังก์ชันอัปเดตข้อมูล (PUT)
+// ฟังก์ชันอัปเดตข้อมูล (PUT) **************************
 export const useUpdateView = () => {
   const queryClient = useQueryClient();
 
@@ -86,7 +86,7 @@ export const useUpdateView = () => {
   });
 };
 
-// ฟังก์ชันลบข้อมูล (DELETE)
+// ฟังก์ชันลบข้อมูล (DELETE) **************************
 export const useDeleteView = () => {
   const queryClient = useQueryClient();
 

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>page.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#Permission">Permission</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">page.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use client";
+
+// pages/register.js
+import React from 'react';
+import { useState,useEffect} from "react";
+// import Link from 'next/link';
+import './permission.css';
+import { useRouter } from 'next/navigation'; // ใช้ next/navigation สำหรับ App Router
+import axios from "axios";  // ใช้เรียก api
+import Swal from 'sweetalert2'; // Import SweetAlert2
+
+// import Header from '@/components/header';
+import Footer from '@/components/footer';
+import Topbar from '@/components/topbar';
+import ProtectedRoute from '@/components/protectedRoute';
+import Loader2 from '@/components/loader2';
+
+/**
+ * Permission component for managing user permissions.
+ * @param {string} mimetype - Body mimetype.
+ * @param {Object} data - Data to be marshalled.
+ * @returns {JSX.Element} The rendered component 55555555555555.
+ * 
+  * @example
+ * // Example usage of the Permission component
+ * const mimetype = "application/json";
+ * const data = {
+ *     userId: 1,
+ *     permissions: ["read", "write"]
+ * };
+ * 
+ * &lt;Permission mimetype={mimetype} data={data} />
+ */
+const Permission = () => {
+    const [level, setLevel] = useState({});
+    const [levelAuthorizer, setLevelAuthorizer] = useState();
+    const [loading, setLoading] = useState(true); // สถานะสำหรับ Loading
+    const [usersData, setUsersData] = useState([]); // เก็บข้อมูล All user จาก api
+    const [filteredUsers, setFilteredUsers] = useState([]); 
+    const [searchQuery, setSearchQuery] = useState('');
+    const router = useRouter(); // Use redirect page
+
+    // ทำงานแค่ครั้งเดียวเมื่อคอมโพเนนต์โหลด Get api ข้อมูลผู้ให้สิทธิ์ และ All user   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    useEffect(() => { 
+        const user_level = localStorage.getItem("level"); // ดึง Token จาก localStorage
+        const token = localStorage.getItem("access_token"); // ดึง Token จาก localStorage
+        const username = localStorage.getItem("username"); // ดึง Token จาก localStorage
+        // console.log(user_level);
+        if(user_level === "1" || user_level === "2"){
+            localStorage.removeItem("user_id");
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("username");
+            localStorage.removeItem("name");
+            localStorage.removeItem("department");
+            localStorage.removeItem("position");
+            localStorage.removeItem("level");
+            router.push("/"); // ถ้าไม่มี Token or  username ให้ Redirect ไปหน้า Login
+        }else if ((!token) || (!username)) {
+            router.push("/"); // ถ้าไม่มี Token or  username ให้ Redirect ไปหน้า Login
+        }else{
+
+            // *************************************   Get Api >> Authorizer user ข้อมูลผู้ให้สิทธิ์  ********************************************************
+            const user_id = localStorage.getItem('user_id');  // Get user_id ที่เก็บใน localstorage
+            axios.get(`http://127.0.0.1:8000/users/${user_id}`)
+            .then((response) => {
+            console.log(response.data); //   ******* ข้อมูลจะอยู่ใน `response.data` ********
+            setLevelAuthorizer(response.data.level)
+            //   setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+            })
+            .catch((error) => {
+            console.error(error); // จัดการข้อผิดพลาด
+            setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+            });
+
+            // ************************* Get Api >> ALL USER  ผู้ใช้ทั้งหมดที่อยู่ Department เดียวกับผู้ให้สิทธิ์ *************************
+            const departmentAuthorizer = localStorage.getItem('department'); // ดึง department จาก localStorage
+            const level = localStorage.getItem('level'); // ดึง level จาก localStorage       
+            axios.get(`http://127.0.0.1:8000/users`)
+            .then((responseAllUser) => {
+
+                const allUsers = responseAllUser.data;
+                // ***************** กรองข้อมูลตาม level ************************************
+                if (level === "3") {
+                    // หาก level = 3 กรองข้อมูลโดยเปรียบเทียบ department ของผู้ให้สิทธิ์ และไม่แสดง user ผู้ให้สิทธิ์ *************************************
+                    const filteredByDepartment = allUsers.filter((user) => user.department === departmentAuthorizer &amp;&amp; user.id != user_id);
+                    setUsersData(filteredByDepartment); // ตั้งค่าข้อมูลที่กรองแล้ว
+                    setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+                } else if (level === "4") { // Admin *************************************
+                    // หาก level = 4 ให้แสดงข้อมูลทั้งหมด
+                    setUsersData(allUsers); // ใช้ข้อมูลผู้ใช้ทั้งหมด
+                    setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+                }else{
+                    // หาก level ไม่เข้าเงื่อนไข  setUsersData ให้ว่าง ******************
+                    setUsersData([]); // ใช้ข้อมูลผู้ใช้ทั้งหมด
+                    setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+                }
+                //   console.log(responseAllUser.data); //   ******* ข้อมูลจะอยู่ใน `responseAllUser.data` ********
+                //   setUsersData(responseAllUser.data) // setUsersData กรณีดึงข้อมูล User มาแสดงทั้งหมด 
+                // setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+            })
+            .catch((AllUserError) => {
+            console.error(AllUserError); // จัดการข้อผิดพลาด
+            // router.push("/"); // ถ้าไม่มี Token ให้ Redirect ไปหน้า Login
+            window.location.reload();
+            setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+            });
+        }
+    }, []);
+    // console.log("set"+levelAuthorizer);
+    // console.log(usersData);// Debug เชคข้อมูล All user ที่ดึงมาจาก api เก็บใน useState >> usersData *****************
+
+    // useEffect สำหรับการกรองข้อมูล Filter ++++++++++++++++++++++++++++++++++++++++++
+    useEffect(() => {
+        const filtered = usersData.filter((user) => {
+            return (
+                (typeof user.name === 'string' &amp;&amp; user.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                (typeof user.username === 'string' &amp;&amp; user.username.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                (typeof user.department === 'string' &amp;&amp; user.department.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                (typeof user.position === 'string' &amp;&amp; user.position.toLowerCase().includes(searchQuery.toLowerCase()))
+            );
+        });
+        setFilteredUsers(filtered); // ตั้งค่าข้อมูลที่กรองแล้ว
+    }, [searchQuery, usersData]); // ทำงานทุกครั้งที่ searchQuery หรือ usersData เปลี่ยน
+  
+    
+    /**
+     * Handles the change in the search input.
+     * @param {Event} e - The event object from the input change.
+     * @returns {void}
+     */
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value); 
+    };
+
+    /**
+     * Handles the change in user level.
+     * @param {Event} e - The event object from the select change.
+     * @param {string} userId - The ID of the user whose level is being changed.
+     * @returns {void}
+     * 
+     */
+    const handleLevelChange = (e, userId) => {
+        const newLevel = e.target.value;
+        setLevel((prevLevels) => ({
+            ...prevLevels,
+            [userId]: newLevel, // อัปเดตค่าของ userId
+        }));
+    };
+
+    /**
+     * Saves the selected user level.
+     * @param {string} id - The ID of the user.
+     * @param {string} name - The name of the user.
+     */
+    const handleSave = (id, name) => {
+        const selectedLevel = Number(level[id]);  // แปลงเป็นจำนวนเต็ม
+        const userId = id;  // เก็บ id ไว้ในตัวแปรแยก
+        const userName = name;  // เก็บ  name ไว้ในตัวแปรแยก
+        console.log("Saving user with ID:", id, "Level:", selectedLevel);
+        // console.log(level)
+        console.log(userName)
+
+        // +-+-+-+-+-+-+-+-+-+-+- ส่ง API ที่นี่   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+        if (!selectedLevel) { //เชคค่าใน selectedLevel ว่าไม่ว่าง
+            Swal.fire(
+                'Warning!',
+                'Please select a level before saving.',
+                'warning'
+            );
+            return;  // หยุดการทำงานหากไม่มีค่าของ level
+        }else{
+            setLoading(true); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+            // ส่งข้อมูลไปยัง API  *******************************************************************
+            // console.log(userId)
+            axios.put(`http://127.0.0.1:8000/users/${userId}`,{ level:selectedLevel },{
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then((response) => {
+                console.log("Level update successful:", response.data);
+                setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+                Swal.fire({
+                    title: 'Success!',
+                    html: `Permissions assigned to &lt;b>${userName}&lt;/b> successfully.`, // ใช้ &lt;b> เพื่อทำให้ตัวแปรเป็นตัวหนา
+                    icon: 'success',
+                });
+                
+                
+
+                // window.location.reload();
+            })
+            .catch((error) => {
+                console.log(error);
+                // console.log("Level update failed:", error.message);
+                Swal.fire(   // alert เตือนไม่สามารถให้สิทธิ์ได้
+                    'Error!',
+                    'Unable to assign permissions to the user.',
+                    'error'
+                );
+                setLoading(false); // ให้หยุด Loading หลังโหลดข้อมูลเสร็จ
+            });        
+        }
+    };
+    
+    // แสดง Loading ระหว่างโหลด
+    if (loading) {
+      return &lt;div>&lt;Loader2/>&lt;/div>;
+    }
+
+
+    return (
+        &lt;>
+        {/* &lt;ProtectedRoute> */}
+        &lt;Topbar fixedTop="fixed-top"/>
+            &lt;div className="d-flex justify-content-center min-vh-100 bg-light  mt-5">
+                &lt;div className="container py-5">
+                    &lt;h4 className="mb-4">Permission Management&lt;/h4>
+                    {/* Search Box */}
+                    &lt;div className="search-box mb-4">
+                        &lt;div className="row justify-content-end">
+                            &lt;div className="col-12 col-sm-8 col-md-6 col-lg-4">
+                                &lt;div className="input-group">
+                                    &lt;span className="input-group-text bg-white border-end-0">
+                                        &lt;i className="bi bi-search">&lt;/i>
+                                    &lt;/span>
+                                    &lt;input
+                                        type="text"
+                                        className="form-control border-start-0 ps-0"
+                                        placeholder="Search ..."
+                                        value={searchQuery}
+                                        onChange={handleSearchChange}
+                                        aria-label="Search"
+                                    />
+                                &lt;/div>
+                            &lt;/div>
+                        &lt;/div>
+                    &lt;/div>
+                    {/* End search box */}
+                    {/* Data Table ++++++++++++++++++++++++++++++++++ */}
+                    &lt;div className="table-responsive table-container">
+                        &lt;table className="table table-bordered table-hover align-middle">
+                            &lt;thead className="table-light">
+                                &lt;tr>
+                                    &lt;th>Name&lt;/th>
+                                    &lt;th>Username&lt;/th>
+                                    &lt;th>Dapartment&lt;/th>
+                                    &lt;th>Position&lt;/th>
+                                    &lt;th>Level&lt;/th>
+                                    &lt;th>Actions&lt;/th>
+                                &lt;/tr>
+                            &lt;/thead>
+                            {/* filter new ******************** */}
+                            &lt;tbody>
+                                {/* &lt;p>{levelAuthorizer}&lt;/p> */}
+                            
+                                {filteredUsers &amp;&amp; filteredUsers.length > 0 ? (
+                                    filteredUsers.map((user, index) => (
+                                        &lt;tr key={user.id}>
+                                            &lt;td>{user.name}&lt;/td>
+                                            &lt;td>{user.username}&lt;/td>
+                                            &lt;td>{user.department}&lt;/td>
+                                            &lt;td>{user.position}&lt;/td>
+                                            &lt;td>
+                                                {
+                                                    levelAuthorizer === 3 ? (
+                                                    // ถ้า levelAuthorizer = 3 ให้แสดงตัวเลือกเฉพาะ User และ User plus
+                                                    &lt;select 
+                                                        className="form-select" 
+                                                        value={level[user.id] || user.level} // ถ้าไม่มีใน levels ให้ใช้ค่าเดิมจาก user.level
+                                                        onChange={(e) => handleLevelChange(e, user.id)} 
+                                                    >
+                                                        &lt;option value="1">User&lt;/option>
+                                                        &lt;option value="2">User plus&lt;/option>
+                                                    &lt;/select>
+                                                    ) : levelAuthorizer === 4 ? (
+                                                    // ถ้า levelAuthorizer = 4 ให้แสดงตัวเลือกทั้งหมด
+                                                    &lt;select 
+                                                        className="form-select" 
+                                                        value={level[user.id] || user.level} // ถ้าไม่มีใน levels ให้ใช้ค่าเดิมจาก user.level
+                                                        onChange={(e) => handleLevelChange(e, user.id)} 
+                                                    >
+                                                        &lt;option value="1">User&lt;/option>
+                                                        &lt;option value="2">User plus&lt;/option>
+                                                        &lt;option value="3">General&lt;/option>
+                                                        &lt;option value="4">Admin&lt;/option>
+                                                    &lt;/select>
+                                                    ) : (
+                                                    // กรณีอื่นๆ (ถ้า levelAuthorizer ไม่ใช่ 3 หรือ 4)
+                                                    &lt;select 
+                                                        className="form-select" 
+                                                        value={level[user.id] || user.level} // ถ้าไม่มีใน levels ให้ใช้ค่าเดิมจาก user.level
+                                                        onChange={(e) => handleLevelChange(e, user.id)} 
+                                                        disabled // เพิ่ม disabled เพื่อปิดการใช้งาน select
+                                                    >
+                                                        &lt;option value="1">User&lt;/option>
+                                                    &lt;/select>
+                                                    )
+                                                }
+                         
+                                            &lt;/td>
+                                            &lt;td>
+                                                &lt;button 
+                                                    className="btn btn-success btn-sm" 
+                                                    onClick={() => handleSave(user.id,user.name)} 
+                                                >
+                                                    Save
+                                                &lt;/button>
+                                            &lt;/td>
+                                        &lt;/tr>
+                                    ))
+                                ) :  filteredUsers.length === 0 ? (
+                                    &lt;tr>
+                                        &lt;td colSpan="6" className="text-center">
+                                            {/* แสดงข้อความ "ไม่พบข้อมูลที่ตรงกับการค้นหา" เมื่อไม่มีข้อมูลที่กรอง */}
+                                            &lt;span>ไม่พบข้อมูล&lt;/span>
+                                        &lt;/td>
+                                    &lt;/tr>
+                                ) : ( 
+                                    &lt;tr>
+                                        &lt;td colSpan="6" className="text-center">
+                                            {/* แสดงข้อความ loading ที่มีการเคลื่อนไหว */}
+                                            &lt;span className="loading-text">Loading ...&lt;/span>
+                                        &lt;/td>
+                                    &lt;/tr>   
+                                )}
+                            &lt;/tbody>
+                            {/* End tbody */}
+                        &lt;/table>
+                    &lt;/div>
+                    {/* End data table +++++++++++++++++++++ */}
+                &lt;/div>
+            &lt;/div>
+        &lt;Footer/>
+        {/* &lt;/ProtectedRoute> */}
+        &lt;/>
+    );
+}
+
+export default Permission;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Fri Jan 10 2025 09:49:37 GMT+0700 (Indochina Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+
+/* มือถือแนวตั้ง */
+@media (max-width: 767px) and (orientation: portrait) {
+    .maginTopAssets{
+        margin-top: 180px !important;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .container-left-sidebar {
+      max-width: 100% !important; /* Override inline style */
+      padding-left: 0;
+      padding-right: 0;
+    }
+}
