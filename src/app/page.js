@@ -4,7 +4,7 @@ import Loader2 from "@/components/loader2";
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
-import styles from "./page.module.css";
+// import styles from "./page.module.css";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation"; // ใช้ next/navigation สำหรับ App Router
@@ -100,12 +100,28 @@ const Login = () => {
   return (
     <Suspense fallback={<Loader2 />}>
       <div
-        className={`${styles.loginContainer} container-fluid d-flex align-items-center justify-content-center`}
+        style={{
+          height: "100vh",
+          backgroundColor: "#f2f2f2",
+          fontFamily: "'Kanit', serif"
+        }}
+        className="container-fluid d-flex align-items-center justify-content-center"
       >
-        <div className={`${styles.loginBox} row`}>
+        <div 
+          style={{
+            width: "100%",
+            maxWidth: "1000px",
+            borderRadius: "8px",
+            overflow: "hidden"
+          }}
+          className="row"
+        >
           {/* Left side (Login form) */}
           <div
-            className={`col-lg-6 col-md-12 bg-white ${styles.paddingHightLogin}`}
+            style={{
+              padding: "80px 60px 80px 60px"
+            }}
+            className="col-lg-6 col-md-12 bg-white"
           >
             <h2 className="fw-bold text-center">Login</h2>
             <h5 className="pb-4 text-center" style={{ fontSize: "20px" }}>
@@ -156,9 +172,13 @@ const Login = () => {
 
               <button
                 type="submit"
-                className={`btn  w-100 rounded-pill   ${
-                  (styles.loginButton, styles.loginBtn)
-                }`}
+                className="btn btn-light w-100 rounded-pill"
+                style={{
+                  border: "1px solid #ddd",
+                  color: "rgb(50 50 50)",
+                  fontWeight: "bold",
+                  hover: "#fff",
+                }}
               >
                 Login
               </button>
@@ -196,9 +216,28 @@ const Login = () => {
 
           {/* Right side (Welcome message) */}
           <div
-            className={`${styles.welcomeBox} col-lg-6 col-md-12 d-flex flex-column align-items-center justify-content-center`}
+            style={{
+              backgroundColor: "#118DCD",
+              color: "#ffffff",
+              textAlign: "center",
+              padding: "3rem 2rem"
+            }}
+            className="col-lg-6 col-md-12 d-flex flex-column align-items-center justify-content-center"
           >
-            <div className={`mb-4 ${styles.logo}`}>
+            <div 
+              style={{
+                backgroundColor: "#ffffff",
+                borderRadius: "50%",
+                width: "130px",
+                height: "130px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "1.5rem",
+                color: "#fff"
+              }}
+              className="mb-4"
+            >
               <Image
                 src="/logo-actmedia-header.png"
                 alt="Logo Actmedia Thailand"
@@ -214,8 +253,12 @@ const Login = () => {
             <p>Don’t have an account?</p>
             <Link
               href="/register"
-              className={`${styles.registerButton}  btn btn-outline-light rounded-pill`}
-              style={{ width: "30%" }}
+              className="btn btn-outline-light rounded-pill"
+              style={{ 
+                width: "30%",
+                borderColor: "#fff",
+                color: "#fff"
+              }}
             >
               Register
             </Link>
